@@ -20,5 +20,5 @@ Lights Off is going to be a fully responsive, full stack movie/tv show applicati
 
 ## What I want to work on throughout this project
 * Better commit messages and committing more often
-*
+* Make sure my tables are normalized up to third normal form
 

@@ -14,9 +14,9 @@ Lights Off is going to be a fully responsive, full stack movie/tv show applicati
 * Include a forgot password link
 * Hash password using bcrypt or should I use OAuth for logging in?
 * Since I will allow user to upload own movies, I will give them ability to upload an image/trailer so use AWS to store these images/video files
-* I'm not even sure about allthe tables or relationships I want to have, but some off the top of head are Review,User, Movie, Show,Favorites,Seen,etc.
-* Diagram models
-* What if I added a currently showing in features option? and user can be redirected to the website of a theatre or whatever
+* I'm not even sure about all the tables or relationships I want to have, but some off the top of head are Review,User, Movie,Show,Favorites,Seen,etc.
+* Diagram models first and brainstorm it all to best of my ability
+* What if I added a currently showing in theatres option? And the user can be redirected to the website of a theatre or whatever
 
 ## What I want to work on throughout this project
 * Better commit messages and committing more often

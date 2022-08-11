@@ -8,72 +8,70 @@ CREATE TABLE media_type(
 INSERT INTO media_type(medium)
 VALUES('film'),('tv');
 
-/* how to add a constraint to a table */
-ALTER TABLE user_account
-ADD CONSTRAINT unique_user_account_id UNIQUE (user_account_id)
+/* create media_source table */
+CREATE TABLE media_source(
+    media_source_id SERIAL PRIMARY KEY UNIQUE NOT NULL,
+    source TEXT NOT NULL
+)
 
-/*user upload table */
-CREATE TABLE upload(
-    upload_id SERIAL UNIQUE,
-    user_id INTEGER NOT NULL REFERENCES user_account(user_account_id),
-    media_type_id SMALLINT NOT NULL REFERENCES media_type(media_type_id),
+/* insert into media_source table*/
+INSERT INTO media_source(source)
+VALUES('imdb'),('user')
+
+/* create user_account table*/
+CREATE TABLE user_account(
+    user_account_ID SERIAL PRIMARY KEY UNIQUE,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    username TEXT UNIQUE NOT NULL CHECK(LENGTH(username)>=4),
+    password TEXT NOT NULL CHECK(LENGTH(password)>=4),
+    image TEXT
+)
+
+/*create media table*/
+CREATE TABLE media(
+    media_id TEXT PRIMARY KEY NOT NULL UNIQUE,
+    media_source_id SERIAL NOT NULL REFERENCES media_source(media_source_id),
+    media_type_id SERIAL NOT NULL REFERENCES media_type(media_type_id),
+    user_account_id SERIAL REFERENCES user_account(user_account_id),
     title TEXT NOT NULL,
+    release_year SMALLINT,
     rating SMALLINT,
     media_length REAL,
     media_language TEXT,
     synopsis TEXT,
-    release_year SMALLINT NOT NULL,
-    image TEXT,
-    date_added TIMESTAMP,
+    media_image TEXT,
+    date_uploaded TIMESTAMPTZ,
     website TEXT,
-    imdb TEXT
+    imdb TEXT,
+    CHECK(NOT(media_source_id=2 AND user_account_id IS NULL)),
+    CHECK(NOT(media_source_id=2 AND date_uploaded IS NULL))
 )
 
-/* imdb content table */
-CREATE TABLE imdb (
-    imdb_id TEXT PRIMARY KEY UNIQUE NOT NULL,
-    media_type SMALLINT REFERENCES media_type(media_type_id) NOT NULL,
-    release_year SMALLINT,
-    title TEXT NOT NULL,
-    rating REAL,
-    image TEXT
+CREATE TABLE user_favorite(
+    user_account_id SERIAL NOT NULL REFERENCES user_account(user_account_id),
+    media_id SERIAL NOT NULL REFERENCES media(media_id) ON DELETE CASCADE,
+    PRIMARY KEY(user_account_id,media_id)
 )
 
-/* imdb content that user has added to their favorite list*/
-CREATE TABLE user_imdbfavorite(
-    user_id SERIAL REFERENCES user_account(user_account_id) NOT NULL,
-    imdb_id TEXT REFERENCES imdb(imdb_id) NOT NULL
-)
-
-/* imdb content that user has added to their seen list*/
-CREATE TABLE user_imdbseen(
-    user_id SERIAL REFERENCES user_account(user_account_id) NOT NULL,
-    imdb_id TEXT REFERENCES imdb(imdb_id) NOT NULL,
+CREATE TABLE user_seen(
+    user_account_id SERIAL NOT NULL REFERENCES user_account(user_account_id),
+    media_id SERIAL NOT NULL REFERENCES media(media_id) ON DELETE CASCADE,
     date_seen DATE NOT NULL DEFAULT CURRENT_DATE
+    PRIMARY KEY(user_account_id,media_id)
 )
 
-/* user upload's that they have added to their favorite list*/
-CREATE TABLE user_uploadfavorite(
-    user_id SERIAL REFERENCES user_account(user_account_id) NOT NULL,
-    upload_id SERIAL REFERENCES upload(upload_id) NOT NULL
+CREATE TABLE user_watch_next(
+    user_account_id SERIAL NOT NULL REFERENCES user_account(user_account_id),
+    media_id SERIAL NOT NULL REFERENCES media(media_id) ON DELETE CASCADE,
+    priority_level TEXT CHECK(priority_level IN ('low','medium','high')),
+    PRIMARY KEY(user_account_id,media_id)
 )
 
-/* user upload's that they have added to their seen list*/
-CREATE TABLE user_uploadseen(
-    user_id SERIAL REFERENCES user_account(user_account_id) NOT NULL,
-    upload_id SERIAL REFERENCES upload(upload_id) NOT NULL,
-    date_seen DATE NOT NULL DEFAULT CURRENT_DATE
+CREATE TABLE user_review(
+    user_account_id SERIAL NOT NULL REFERENCES user_account(user_account_id),
+    media_id SERIAL  NOT NULL REFERENCES media(media_id) ON DELETE CASCADE,
+    review TEXT NOT NULL,
+    rating SMALLINT NOT NULL,
+    PRIMARY KEY(media_id,user_account_id)
 )
 
-/*media from imdb user has added to their watch next list*/
-CREATE TABLE user_imdb_next(
-    user_id SERIAL REFERENCES user_account(user_account_id) NOT NULL,
-    imdb_id TEXT REFERENCES imdb(imdb_id) NOT NULL,
-    priority TEXT CHECK(priority IN ('low','medium','high'))
-)
-/*media from user's upload that they have added to their watch next list*/
-CREATE TABLE user_upload_next(
-    user_id SERIAL REFERENCES user_account(user_account_id) NOT NULL,
-    upload_id SERIAL REFERENCES upload(upload_id) NOT NULL,
-    priority TEXT CHECK(priority IN ('low','medium','high'))
-)

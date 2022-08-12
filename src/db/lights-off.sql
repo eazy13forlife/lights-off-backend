@@ -24,17 +24,13 @@ CREATE TABLE user_account(
     email VARCHAR(255) UNIQUE NOT NULL,
     username TEXT UNIQUE NOT NULL CHECK(LENGTH(username)>=4),
     password TEXT NOT NULL CHECK(LENGTH(password)>=4),
-    image TEXT
 );
 
-CREATE TABLE user_account(
-    user_account_ID SERIAL PRIMARY KEY UNIQUE,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    username TEXT UNIQUE NOT NULL CHECK(LENGTH(username)>=4),
-    password TEXT NOT NULL CHECK(LENGTH(password)>=4),
-    image TEXT
-);
-
+CREATE TABLE user_auth_token(
+    user_account_id SERIAL UNIQUE  REFERENCES user_account(user_account_id),
+    auth_token TEXT,
+    PRIMARY KEY(user_account_id,auth_token)
+)
 /*create media table*/
 CREATE TABLE media(
     media_id TEXT PRIMARY KEY NOT NULL UNIQUE,
@@ -44,7 +40,8 @@ CREATE TABLE media(
     title TEXT NOT NULL,
     release_year SMALLINT,
     rating SMALLINT,
-    media_length REAL,
+    media_length INT,
+    media_tagline TEXT,
     media_language TEXT,
     synopsis TEXT,
     media_image TEXT,

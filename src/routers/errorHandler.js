@@ -1,7 +1,8 @@
 const express = require("express");
 const router = new express.Router();
 
-//get all uploads by user
-router.get("/uploads/me");
+router.use((error, req, res, next) => {
+  res.status(500).send("Something went wrong");
+});
 
 module.exports = router;

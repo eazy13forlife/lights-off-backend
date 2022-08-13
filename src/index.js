@@ -1,6 +1,7 @@
 const express = require("express");
 
 const db = require("./db/index.js");
+const usersRouter = require("./routers/users");
 const mediaRouter = require("./routers/media");
 const favoritesRouter = require("./routers/favorites");
 const reviewsRouter = require("./routers/reviews");
@@ -12,6 +13,9 @@ const errorHandler = require("./routers/errorHandler");
 const app = express();
 
 const port = process.env.PORT || 3000;
+app.use(express.json());
+
+app.use(usersRouter);
 
 app.use(mediaRouter);
 

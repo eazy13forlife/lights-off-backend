@@ -8,6 +8,6 @@ router.get("/seen");
 router.post("/seen/:mediaId");
 
 //delete a specific media from seen
-route.delete("/seen/:mediaId");
+router.delete("/seen/:mediaId");
 
 module.exports = router;

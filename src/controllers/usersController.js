@@ -1,5 +1,6 @@
 const UserData = require("../helperFunctions/users/UserData");
 const { poolQuery } = require("../db");
+const generateAuthToken = require("../helperFunctions/users/generateAuthToken");
 
 //need email, username and password fields
 const createAccount = async (req, res) => {
@@ -21,8 +22,20 @@ const createAccount = async (req, res) => {
       [req.body.email, req.body.username, hashedPassword]
     );
 
-    //get the most recent row added
-    res.status(201).send(response.rows[response.rows.length - 1]);
+    //the most recent row is the user that was added
+    const insertedUser = response.rows[response.rows.length - 1];
+
+    //provide user with a jwt token and save it
+    const authToken = generateAuthToken(insertedUser.user_account_id);
+
+    await poolQuery(
+      `INSERT INTO user_auth_token(user_account_id,auth_token)
+       VALUES($1,$2)`,
+      [insertedUser.user_account_id, authToken]
+    );
+
+    //send the added user and their authToken
+    res.status(201).send({ insertedUser, authToken });
   } catch (e) {
     res.status(500).send(e.message);
   }

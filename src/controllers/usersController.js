@@ -25,9 +25,9 @@ const createAccount = async (req, res) => {
     //the most recent row is the user that was added
     const insertedUser = response.rows[response.rows.length - 1];
 
-    //provide user with a jwt token and save it
     const authToken = generateAuthToken(insertedUser.user_account_id);
 
+    //save authToken to user_auth_token table
     await poolQuery(
       `INSERT INTO user_auth_token(user_account_id,auth_token)
        VALUES($1,$2)`,

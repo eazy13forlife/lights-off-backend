@@ -1,0 +1,32 @@
+const express = require("express");
+
+const usersRouter = require("./routers/users");
+const mediaRouter = require("./routers/media");
+const favoritesRouter = require("./routers/favorites");
+const reviewsRouter = require("./routers/reviews");
+const seenRouter = require("./routers/seen");
+const uploadsRouter = require("./routers/uploads");
+const watchNextRouter = require("./routers/watchNext");
+const errorHandler = require("./routers/errorHandler");
+
+const app = express();
+
+app.use(express.json());
+
+app.use(usersRouter);
+
+app.use(mediaRouter);
+
+app.use(favoritesRouter);
+
+app.use(reviewsRouter);
+
+app.use(seenRouter);
+
+app.use(uploadsRouter);
+
+app.use(watchNextRouter);
+
+app.use(errorHandler);
+
+module.exports = app;

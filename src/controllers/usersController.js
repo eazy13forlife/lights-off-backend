@@ -8,7 +8,11 @@ const {
 //need email, username and password fields
 const createAccount = async (req, res) => {
   try {
-    const user = new UserData(req.body);
+    const user = new UserData(req.body, {
+      email: true,
+      password: true,
+      username: true,
+    });
 
     const dataErrors = user.checkIfDataErrors();
 
@@ -42,22 +46,34 @@ const createAccount = async (req, res) => {
 //need to provide username and password. They will get back authToken
 const loginToAccount = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const userData = new UserData(req.body, { username: true, password: true });
+
+    //check to make sure all required fields are entered
+    const fieldsMissing = userData.checkAllRequiredFields();
+
+    if (fieldsMissing) {
+      return res
+        .status(fieldsMissing.statusCode)
+        .send(fieldsMissing.errorMessage);
+    }
 
     //find user based on username
     const userResults = await poolQuery(
       `SELECT * FROM user_account
-      WHERE username='${username}'`
+      WHERE username='${req.body.username}'`
     );
 
     if (!userResults.rows.length) {
-      return res.status(404).send("Invalid credentials");
+      return res.status(401).send("Invalid credentials");
     }
 
     const user = userResults.rows[0];
 
     //compare users current hashed password and text password
-    const doPasswordsMatch = await checkPassword(password, user.password);
+    const doPasswordsMatch = await checkPassword(
+      req.body.password,
+      user.password
+    );
 
     if (!doPasswordsMatch) {
       return res.status(401).send("Invalid credentials");

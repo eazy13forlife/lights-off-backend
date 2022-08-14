@@ -2,25 +2,26 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 class UserData {
-  constructor(userData) {
+  constructor(userData, requiredFields) {
     this.email = userData.email;
     this.username = userData.username;
     this.password = userData.password;
+    this.requiredFields = requiredFields;
   }
 
   //returns undefined if all fields are provided
   checkAllRequiredFields() {
-    if (!this.email) {
+    if (!this.email && this.requiredFields.email) {
       return {
         statusCode: 400,
         errorMessage: "Email field is required",
       };
-    } else if (!this.username) {
+    } else if (!this.username && this.requiredFields.username) {
       return {
         statusCode: 400,
         errorMessage: "Username field is required",
       };
-    } else if (!this.password) {
+    } else if (!this.password && this.requiredFields.password) {
       return {
         statusCode: 400,
         errorMessage: "Password field is required",

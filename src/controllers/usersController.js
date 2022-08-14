@@ -1,6 +1,9 @@
 const UserData = require("../helperFunctions/users/UserData");
 const { poolQuery } = require("../db");
-const generateAuthToken = require("../helperFunctions/users/generateAuthToken");
+const {
+  checkPassword,
+  sendUserAuthToken,
+} = require("../helperFunctions/users");
 
 //need email, username and password fields
 const createAccount = async (req, res) => {
@@ -25,23 +28,48 @@ const createAccount = async (req, res) => {
     //the most recent row is the user that was added
     const insertedUser = response.rows[response.rows.length - 1];
 
-    const authToken = generateAuthToken(insertedUser.user_account_id);
+    //send the user an authToken
+    const authToken = await sendUserAuthToken(insertedUser.user_account_id);
 
-    //save authToken to user_auth_token table
-    await poolQuery(
-      `INSERT INTO user_auth_token(user_account_id,auth_token)
-       VALUES($1,$2)`,
-      [insertedUser.user_account_id, authToken]
-    );
-
-    //send the added user and their authToken
+    //respond with the added user and their authToken
     res.status(201).send({ insertedUser, authToken });
   } catch (e) {
+    console.log(e.message);
     res.status(500).send(e.message);
   }
 };
 
-const loginToAccount = (req, res) => {};
+//need to provide username and password. They will get back authToken
+const loginToAccount = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    //find user based on username
+    const userResults = await poolQuery(
+      `SELECT * FROM user_account
+      WHERE username='${username}'`
+    );
+
+    if (!userResults.rows.length) {
+      return res.status(404).send("Invalid credentials");
+    }
+
+    const user = userResults.rows[0];
+
+    //compare users current hashed password and text password
+    const doPasswordsMatch = await checkPassword(password, user.password);
+
+    if (!doPasswordsMatch) {
+      return res.status(401).send("Invalid credentials");
+    }
+
+    const authToken = await sendUserAuthToken(user.user_account_id);
+
+    res.send({ user, authToken });
+  } catch (e) {
+    res.status(401).send("Invalid credentials");
+  }
+};
 
 const getAccountInfo = (req, res) => {};
 

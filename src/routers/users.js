@@ -1,13 +1,16 @@
 const express = require("express");
 const router = new express.Router();
 
-const { createAccount } = require("../controllers/usersController");
+const {
+  createAccount,
+  loginToAccount,
+} = require("../controllers/usersController");
 
 //create account (public)
 router.post("/users/signup", createAccount);
 
 //login to account(public)
-router.post("/users/login");
+router.post("/users/login", loginToAccount);
 
 //get my account info
 router.get("users/me");

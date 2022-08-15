@@ -89,7 +89,11 @@ const loginToAccount = async (req, res) => {
 };
 
 const getAccountInfo = (req, res) => {
-  res.send("hey");
+  try {
+    res.send(req.user);
+  } catch (e) {
+    res.status(500).send(e);
+  }
 };
 
 const editAccountInfo = (req, res) => {};

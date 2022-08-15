@@ -14,10 +14,6 @@ beforeEach(async () => {
   await clearUserAccountTable();
   await addExampleUserToUserAccount(exampleUser1);
   await addExampleUserToUserAccount(exampleUser2);
-  await removeAuthTokenFromUser(
-    exampleUser2.user_account_id,
-    exampleUser2.authToken
-  );
 });
 
 test("Sign up a valid new user", async () => {
@@ -131,7 +127,12 @@ test("The authentication middleware should fail for an invalid user", async () =
     .send()
     .expect(401);
 
-  //auth token is verified but does not currently belong to current user
+  //auth token is verified but does not currently belong to the user
+  await removeAuthTokenFromUser(
+    exampleUser2.user_account_id,
+    exampleUser2.authToken
+  );
+
   await request(app)
     .get("/users/me")
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)

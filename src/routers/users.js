@@ -1,6 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 
+const authenticateMiddleware = require("../middleware/authenticate");
 const {
   createAccount,
   loginToAccount,
@@ -13,7 +14,7 @@ router.post("/users/signup", createAccount);
 router.post("/users/login", loginToAccount);
 
 //get my account info
-router.get("users/me");
+router.get("/users/me", authenticateMiddleware);
 
 //edit my account info
 router.patch("/users/me");

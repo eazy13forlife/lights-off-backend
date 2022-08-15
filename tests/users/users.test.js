@@ -4,13 +4,20 @@ const { poolQuery, getClient } = require("../../src/db");
 const {
   clearUserAccountTable,
   addExampleUserToUserAccount,
+  removeAuthTokenFromUser,
   exampleUser1,
+  exampleUser2,
 } = require("./beforeEachFunctions");
 const app = require("../../src/app");
 
 beforeEach(async () => {
   await clearUserAccountTable();
   await addExampleUserToUserAccount(exampleUser1);
+  await addExampleUserToUserAccount(exampleUser2);
+  await removeAuthTokenFromUser(
+    exampleUser2.user_account_id,
+    exampleUser2.authToken
+  );
 });
 
 test("Sign up a valid new user", async () => {
@@ -105,5 +112,29 @@ test("Do not login invalid user", async () => {
   await request(app)
     .post("/users/login")
     .send({ username: exampleUser1.loginData.username, password: "asdsds" })
+    .expect(401);
+});
+
+test("The authenticate middleware should succeed for a valid user", async () => {
+  await request(app)
+    .get("/users/me")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("The authentication middleware should fail for an invalid user", async () => {
+  //user's token cannot be verified
+  await request(app)
+    .get("/users/me")
+    .set("Authorization", `Bearer 323423`)
+    .send()
+    .expect(401);
+
+  //auth token is verified but does not currently belong to current user
+  await request(app)
+    .get("/users/me")
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
     .expect(401);
 });

@@ -5,6 +5,7 @@ const authenticateMiddleware = require("../middleware/authenticate");
 const {
   createAccount,
   loginToAccount,
+  getAccountInfo,
 } = require("../controllers/usersController");
 
 //create account (public)
@@ -14,7 +15,7 @@ router.post("/users/signup", createAccount);
 router.post("/users/login", loginToAccount);
 
 //get my account info
-router.get("/users/me", authenticateMiddleware);
+router.get("/users/me", authenticateMiddleware, getAccountInfo);
 
 //edit my account info
 router.patch("/users/me");

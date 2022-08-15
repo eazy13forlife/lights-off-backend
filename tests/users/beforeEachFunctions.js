@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
-const { v4: uuidv4 } = require("uuid");
+const jwt = require("jsonwebtoken");
+
 const { poolQuery, getClient } = require("../../src/db");
 
 //provide user_account_id ourselves so we can easily find user when we need to update its other tables.
@@ -11,7 +12,17 @@ const exampleUser1 = {
     password: "icecream",
   },
   user_account_id: 1,
-  authToken: uuidv4(),
+  authToken: jwt.sign({ user_account_id: 1 }, process.env.JWT_KEY),
+};
+
+const exampleUser2 = {
+  loginData: {
+    email: "kohnny@ayhoo.com",
+    username: "kohnnurocks",
+    password: "kcecream",
+  },
+  user_account_id: 2,
+  authToken: jwt.sign({ user_account_id: 2 }, process.env.JWT_KEY),
 };
 
 const addExampleUserToUserAccount = async (exampleUser) => {
@@ -48,6 +59,13 @@ const addExampleUserToUserAccount = async (exampleUser) => {
   }
 };
 
+const removeAuthTokenFromUser = async (userId, authToken) => {
+  await poolQuery(
+    `DELETE FROM user_auth_token
+    WHERE user_account_id=${userId} AND auth_token='${authToken}'`
+  );
+};
+
 //clear user_account table which means clearing user_auth_token first due to relationship
 const clearUserAccountTable = async () => {
   const client = await getClient();
@@ -72,5 +90,7 @@ const clearUserAccountTable = async () => {
 module.exports = {
   clearUserAccountTable,
   addExampleUserToUserAccount,
+  removeAuthTokenFromUser,
   exampleUser1,
+  exampleUser2,
 };

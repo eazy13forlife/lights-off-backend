@@ -88,7 +88,9 @@ const loginToAccount = async (req, res) => {
   }
 };
 
-const getAccountInfo = (req, res) => {};
+const getAccountInfo = (req, res) => {
+  res.send("hey");
+};
 
 const editAccountInfo = (req, res) => {};
 

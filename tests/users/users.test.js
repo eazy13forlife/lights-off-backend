@@ -76,7 +76,7 @@ test("Login valid user", async () => {
   //expect a 200 status code
   const response = await request(app)
     .post("/users/login")
-    .send(exampleUser1)
+    .send(exampleUser1.loginData)
     .expect(200);
 
   //expect authToken to be in user's user_auth_token table
@@ -92,18 +92,18 @@ test("Do not login invalid user", async () => {
   //expect 400 if a field is missing
   await request(app)
     .post("/users/login")
-    .send({ password: exampleUser1.password })
+    .send({ password: exampleUser1.loginData.password })
     .expect(400);
 
   //expect 401 if username is not found
   await request(app)
     .post("/users/login")
-    .send({ username: "jwillis", password: "eddison" })
+    .send({ username: "jwillis", password: exampleUser1.loginData.password })
     .expect(401);
 
   //expect 401 if passwords dont match up
   await request(app)
     .post("/users/login")
-    .send({ username: exampleUser1.username, password: "asdsds" })
+    .send({ username: exampleUser1.loginData.username, password: "asdsds" })
     .expect(401);
 });

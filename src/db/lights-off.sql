@@ -27,7 +27,7 @@ CREATE TABLE user_account(
 );
 
 CREATE TABLE user_auth_token(
-    user_account_id SERIAL UNIQUE  REFERENCES user_account(user_account_id),
+    user_account_id SERIAL REFERENCES user_account(user_account_id),
     auth_token TEXT,
     PRIMARY KEY(user_account_id,auth_token)
 );

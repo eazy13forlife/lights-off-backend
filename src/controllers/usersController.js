@@ -83,6 +83,7 @@ const loginToAccount = async (req, res) => {
 
     res.send({ user, authToken });
   } catch (e) {
+    console.log(e);
     res.status(401).send("Invalid credentials");
   }
 };

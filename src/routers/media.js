@@ -1,8 +1,11 @@
 const express = require("express");
 const router = new express.Router();
 
+const authenticateMiddleware = require("../middleware/authenticate");
+const { addMedia } = require("../controllers/mediaController");
+
 //upload media
-router.post("/media");
+router.post("/media", authenticateMiddleware, addMedia);
 
 //get a specific media by id
 router.get("/media/:mediaId");

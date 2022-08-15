@@ -37,7 +37,7 @@ CREATE TABLE media(
     media_id TEXT PRIMARY KEY NOT NULL UNIQUE,
     media_source_id SERIAL NOT NULL REFERENCES media_source(media_source_id),
     media_type_id SERIAL NOT NULL REFERENCES media_type(media_type_id),
-    user_account_id SERIAL REFERENCES user_account(user_account_id),
+    user_account_id INT REFERENCES user_account(user_account_id),
     title TEXT NOT NULL,
     release_year SMALLINT,
     rating SMALLINT,

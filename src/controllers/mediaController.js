@@ -19,7 +19,28 @@ const addMedia = async (req, res) => {
   }
 };
 
-const getMedia = (req, res) => {};
+//gets specific media that user has uploaded
+const getMedia = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const mediaResponse = await poolQuery(`
+    SELECT * FROM media
+    WHERE user_account_id=${userId} AND media_id='${mediaId}'`);
+
+    if (mediaResponse.rowCount === 0) {
+      return res.status(404).send();
+    }
+
+    const media = mediaResponse.rows[0];
+
+    res.send(media);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+};
 
 //we can only delete media that belongs to user,so check to see if media id belongs to user
 const deleteMedia = (req, res) => {};

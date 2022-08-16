@@ -24,7 +24,7 @@ test("Throw error if inserting invalid data to media table", async () => {
   ).rejects.toThrow();
 });
 
-test("Expect 201 response when adding valid data to media table", async () => {
+test("Expect 201 response when making a valid (post /media) request", async () => {
   await request(app)
     .post("/media")
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
@@ -32,7 +32,7 @@ test("Expect 201 response when adding valid data to media table", async () => {
     .expect(201);
 });
 
-test("Expect 400 response when adding invalid data to media table", async () => {
+test("Expect 400 response when making an invalid (post /media) request", async () => {
   await request(app)
     .post("/media")
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)

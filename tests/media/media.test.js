@@ -2,7 +2,7 @@ const request = require("supertest");
 
 const app = require("../../src/app");
 const { poolQuery } = require("../../src/db");
-const insertDataToMediaTable = require("../../src/helperFunctions/media");
+const { insertDataToMediaTable } = require("../../src/helperFunctions/media");
 const { exampleMedia1, exampleMedia2, clearMediaTable } = require("./fixtures");
 const { exampleUser1, exampleUser2 } = require("../users/fixtures");
 const runGlobalSetup = require("../globalSetup");
@@ -67,4 +67,20 @@ test("Do not retrieve nonexistant mediaId for exampleUser2", async () => {
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
     .send()
     .expect(400);
+});
+
+test("Delete exampleMedia1 which is uploaded by exampleUser1", async () => {
+  await request(app)
+    .delete("/media/1")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Do not let exampleUser2 delete exampleMedia1 (which belongs to exampleUser1)", async () => {
+  await request(app)
+    .delete("/media/1")
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
 });

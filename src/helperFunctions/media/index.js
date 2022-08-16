@@ -1,3 +1,5 @@
+const { poolQuery } = require("../../db");
+
 //inserts a row to our media table
 const insertDataToMediaTable = async (
   connectionType,
@@ -51,4 +53,16 @@ const insertDataToMediaTable = async (
   }
 };
 
-module.exports = insertDataToMediaTable;
+const findMediaOfUser = async (userId, mediaId) => {
+  const mediaResponse = await poolQuery(`
+  SELECT * FROM (SELECT * FROM media WHERE media_id='${mediaId}') AS derived_table
+  WHERE user_account_id=${userId}`);
+
+  if (mediaResponse.rowCount === 0) {
+    return undefined;
+  }
+
+  return mediaResponse.rows[0];
+};
+
+module.exports = { insertDataToMediaTable, findMediaOfUser };

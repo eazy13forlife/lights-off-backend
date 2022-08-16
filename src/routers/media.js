@@ -2,7 +2,11 @@ const express = require("express");
 const router = new express.Router();
 
 const authenticateMiddleware = require("../middleware/authenticate");
-const { addMedia, getMedia } = require("../controllers/mediaController");
+const {
+  addMedia,
+  getMedia,
+  deleteMedia,
+} = require("../controllers/mediaController");
 
 //upload media
 router.post("/media", authenticateMiddleware, addMedia);
@@ -11,7 +15,7 @@ router.post("/media", authenticateMiddleware, addMedia);
 router.get("/media/:mediaId", authenticateMiddleware, getMedia);
 
 //delete a specific media by id
-router.delete("/media/:mediaId");
+router.delete("/media/:mediaId", authenticateMiddleware, deleteMedia);
 
 //update a specific media by id
 router.patch("/media/:mediaId");

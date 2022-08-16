@@ -1,4 +1,7 @@
-const insertDataToMediaTable = require("../helperFunctions/media");
+const {
+  insertDataToMediaTable,
+  findMediaOfUser,
+} = require("../helperFunctions/media");
 const { poolQuery, getClient } = require("../db");
 
 const addMedia = async (req, res) => {
@@ -26,15 +29,11 @@ const getMedia = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const mediaResponse = await poolQuery(`
-    SELECT * FROM media
-    WHERE user_account_id=${userId} AND media_id='${mediaId}'`);
+    const media = await findMediaOfUser(userId, mediaId);
 
-    if (mediaResponse.rowCount === 0) {
+    if (!media) {
       return res.status(400).send();
     }
-
-    const media = mediaResponse.rows[0];
 
     res.send(media);
   } catch (e) {
@@ -43,7 +42,28 @@ const getMedia = async (req, res) => {
 };
 
 //we can only delete media that belongs to user,so check to see if media id belongs to user
-const deleteMedia = (req, res) => {};
+const deleteMedia = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const media = await findMediaOfUser(userId, mediaId);
+
+    if (!media) {
+      return res.status(404).send();
+    }
+
+    const response = await poolQuery(
+      `DELETE FROM media
+      WHERE media_id='${mediaId}'`
+    );
+
+    res.status(200).send();
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+};
 
 //we can only update media that belongs to user
 const updateMedia = (req, res) => {};

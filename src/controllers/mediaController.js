@@ -11,7 +11,7 @@ const addMedia = async (req, res) => {
       mediaData
     );
 
-    console.log(response);
+    const insertedData = response.rows[0];
 
     res.status(201).send();
   } catch (e) {
@@ -19,15 +19,17 @@ const addMedia = async (req, res) => {
   }
 };
 
-const getAllMedia = (req, res) => {};
+const getMedia = (req, res) => {};
 
+//we can only delete media that belongs to user,so check to see if media id belongs to user
 const deleteMedia = (req, res) => {};
 
+//we can only update media that belongs to user
 const updateMedia = (req, res) => {};
 
 module.exports = {
   addMedia,
-  getAllMedia,
+  getMedia,
   deleteMedia,
   updateMedia,
 };

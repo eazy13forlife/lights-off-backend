@@ -1,8 +1,8 @@
 const request = require("supertest");
 
 const app = require("../../src/app");
-const { poolQuery, getClient } = require("../../src/db");
-const runGlobalSetup = require("../globalStartup.js");
+const { poolQuery } = require("../../src/db");
+const runGlobalSetup = require("../globalSetup.js");
 const {
   exampleUser1,
   exampleUser2,

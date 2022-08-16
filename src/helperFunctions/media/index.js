@@ -65,4 +65,39 @@ const findMediaOfUser = async (userId, mediaId) => {
   return mediaResponse.rows[0];
 };
 
-module.exports = { insertDataToMediaTable, findMediaOfUser };
+const updateMediaTableValues = async (mediaId, updateData) => {
+  let text = `UPDATE media
+  SET ${getUpdateText(updateData)}
+  WHERE media_id='${mediaId}'
+  RETURNING *`;
+
+  values = Object.values(updateData);
+
+  console.log(text);
+
+  const response = await poolQuery(text, values);
+};
+
+const getUpdateText = (updateData) => {
+  const columns = Object.keys(updateData);
+
+  let text = "";
+
+  for (let i = 0; i < columns.length; i++) {
+    let currentColValString = `${columns[i]}=$${i + 1}`;
+
+    text += currentColValString;
+
+    if (i !== columns.length - 1) {
+      text += ",";
+    }
+  }
+
+  return text;
+};
+
+module.exports = {
+  insertDataToMediaTable,
+  findMediaOfUser,
+  updateMediaTableValues,
+};

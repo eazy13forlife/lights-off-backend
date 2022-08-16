@@ -6,6 +6,7 @@ const {
   addMedia,
   getMedia,
   deleteMedia,
+  updateMedia,
 } = require("../controllers/mediaController");
 
 //upload media
@@ -18,6 +19,6 @@ router.get("/media/:mediaId", authenticateMiddleware, getMedia);
 router.delete("/media/:mediaId", authenticateMiddleware, deleteMedia);
 
 //update a specific media by id
-router.patch("/media/:mediaId");
+router.patch("/media/:mediaId", authenticateMiddleware, updateMedia);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const {
   insertDataToMediaTable,
   findMediaOfUser,
+  updateMediaTableValues,
 } = require("../helperFunctions/media");
 const { poolQuery, getClient } = require("../db");
 
@@ -66,7 +67,28 @@ const deleteMedia = async (req, res) => {
 };
 
 //we can only update media that belongs to user
-const updateMedia = (req, res) => {};
+const updateMedia = async (req, res) => {
+  try {
+    console.log(
+      updateMediaTableValues("sfssf", { media_id: "yes", title: "i love" })
+    );
+    const updateData = req.body;
+
+    const mediaId = req.params.mediaId;
+
+    const response = await poolQuery(
+      `UPDATE media
+      SET title=$1
+      WHERE media_id='${mediaId}'
+      RETURNING *`,
+      ["hello"]
+    );
+
+    console.log(response);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+};
 
 module.exports = {
   addMedia,

@@ -4,9 +4,8 @@ const {
   exampleUser1,
   exampleUser2,
 } = require("./users/fixtures");
-
+const { clearMediaTable } = require("./media/fixtures");
 const runGlobalSetup = async () => {
-  await clearUserAccountTable();
   await addExampleUserToUserAccount(exampleUser1);
   await addExampleUserToUserAccount(exampleUser2);
 };

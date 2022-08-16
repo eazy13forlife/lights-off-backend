@@ -7,10 +7,15 @@ const {
   exampleUser1,
   exampleUser2,
   removeAuthTokenFromUser,
+  clearUserAccountTable,
 } = require("./fixtures");
 
 beforeEach(async () => {
   await runGlobalSetup();
+});
+
+afterEach(async () => {
+  await clearUserAccountTable();
 });
 
 test("Sign up a valid new user", async () => {
@@ -124,7 +129,7 @@ test("The authentication middleware should fail for an invalid user", async () =
     .send()
     .expect(401);
 
-  //auth token is verified but does not currently belong to the user
+  //auth token is verified but does not currently belong to the user. (we have removed user's 2 authToken)
   await removeAuthTokenFromUser(
     exampleUser2.user_account_id,
     exampleUser2.authToken

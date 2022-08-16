@@ -2,9 +2,12 @@ const app = require("../../src/app");
 const request = require("supertest");
 const { poolQuery, getClient } = require("../../src/db");
 const insertDataToMediaTable = require("../../src/helperFunctions/media");
-const { exampleMedia1, clearMediaTable } = require("./beforeEachFunctions");
+const { exampleMedia1, clearMediaTable } = require("./fixtures");
+const { exampleUser2 } = require("../users/fixtures");
+const runGlobalSetup = require("../globalStartup");
 
 beforeEach(async () => {
+  await runGlobalSetup();
   await clearMediaTable();
 });
 
@@ -21,4 +24,10 @@ test("Throw error if inserting invalid data to media table", async () => {
   ).rejects.toThrow();
 });
 
-test("Expect 201 response when adding valid data to media table", async () => {});
+test("Expect 201 response when adding valid data to media table", async () => {
+  await request(app)
+    .post("/media")
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send(exampleMedia1)
+    .expect(201);
+});

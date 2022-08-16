@@ -1,19 +1,16 @@
 const request = require("supertest");
 
+const app = require("../../src/app");
 const { poolQuery, getClient } = require("../../src/db");
+const runGlobalSetup = require("../globalStartup.js");
 const {
-  clearUserAccountTable,
-  addExampleUserToUserAccount,
-  removeAuthTokenFromUser,
   exampleUser1,
   exampleUser2,
-} = require("./beforeEachFunctions");
-const app = require("../../src/app");
+  removeAuthTokenFromUser,
+} = require("./fixtures");
 
 beforeEach(async () => {
-  await clearUserAccountTable();
-  await addExampleUserToUserAccount(exampleUser1);
-  await addExampleUserToUserAccount(exampleUser2);
+  await runGlobalSetup();
 });
 
 test("Sign up a valid new user", async () => {

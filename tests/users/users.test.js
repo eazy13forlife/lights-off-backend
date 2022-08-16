@@ -45,8 +45,7 @@ test("Sign up a valid new user", async () => {
   expect(insertedUser.password).not.toBe("ericrocks");
 });
 
-test("Do not sign up invalid new user", async () => {
-  //either email is invalid
+test("Do not sign up a new user with an invalid email", async () => {
   await request(app)
     .post("/users/signup")
     .send({
@@ -55,8 +54,9 @@ test("Do not sign up invalid new user", async () => {
       password: "ericrocks",
     })
     .expect("Invalid email");
+});
 
-  //either username is not at least 4 characters
+test("Do not sign up a new user without at least 4 characters in username", async () => {
   await request(app)
     .post("/users/signup")
     .send({
@@ -65,8 +65,9 @@ test("Do not sign up invalid new user", async () => {
       password: "ericrocks",
     })
     .expect("Username must be at least 4 characters");
+});
 
-  //either password is not at least 4 characters
+test("Do not sign up a new user without at least 4 characters in password", async () => {
   await request(app)
     .post("/users/signup")
     .send({
@@ -77,7 +78,7 @@ test("Do not sign up invalid new user", async () => {
     .expect("Password must be at least 4 characters");
 });
 
-test("Login valid user", async () => {
+test("Login exampleUser1 when they provide their valid login data", async () => {
   //expect a 200 status code
   const response = await request(app)
     .post("/users/login")
@@ -93,19 +94,22 @@ test("Login valid user", async () => {
   expect(authTokenResult.rowCount).toBe(1);
 });
 
-test("Do not login invalid user", async () => {
+test("Do not login exampleUser1 if they provide a missing required field", async () => {
   //expect 400 if a field is missing
   await request(app)
     .post("/users/login")
     .send({ password: exampleUser1.loginData.password })
     .expect(400);
+});
 
-  //expect 401 if username is not found
+test("Do not login exampleUser1 if their username is not found", async () => {
   await request(app)
     .post("/users/login")
     .send({ username: "jwillis", password: exampleUser1.loginData.password })
     .expect(401);
+});
 
+test("Do not login exampleUser1 if their password is incorrect", async () => {
   //expect 401 if passwords dont match up
   await request(app)
     .post("/users/login")
@@ -113,7 +117,7 @@ test("Do not login invalid user", async () => {
     .expect(401);
 });
 
-test("The authenticate middleware should succeed for a valid user", async () => {
+test("The authenticate middleware should succeed for exampleUser1 when they provide their correct authToken", async () => {
   await request(app)
     .get("/users/me")
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -121,15 +125,16 @@ test("The authenticate middleware should succeed for a valid user", async () => 
     .expect(200);
 });
 
-test("The authentication middleware should fail for an invalid user", async () => {
+test("The authentication middleware should fail for an invalid authToken", async () => {
   //user's token cannot be verified
   await request(app)
     .get("/users/me")
     .set("Authorization", `Bearer 323423`)
     .send()
     .expect(401);
+});
 
-  //auth token is verified but does not currently belong to the user. (we have removed user's 2 authToken)
+test("The authentication middleware should fail when exampleUser2 does not currently have the authToken they are using", async () => {
   await removeAuthTokenFromUser(
     exampleUser2.user_account_id,
     exampleUser2.authToken

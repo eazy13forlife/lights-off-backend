@@ -69,23 +69,27 @@ const deleteMedia = async (req, res) => {
 //we can only update media that belongs to user
 const updateMedia = async (req, res) => {
   try {
-    console.log(
-      updateMediaTableValues("sfssf", { media_id: "yes", title: "i love" })
-    );
     const updateData = req.body;
 
     const mediaId = req.params.mediaId;
 
-    const response = await poolQuery(
-      `UPDATE media
-      SET title=$1
-      WHERE media_id='${mediaId}'
-      RETURNING *`,
-      ["hello"]
-    );
+    const userId = req.user.user_account_id;
 
-    console.log(response);
+    const media = await findMediaOfUser(userId, mediaId);
+
+    if (!media) {
+      return res.status(404).send();
+    }
+
+    const updatedMedia = await updateMediaTableValues(mediaId, updateData);
+
+    res.send(updatedMedia);
   } catch (e) {
+    //user is trying to update a column that doesn't exist
+    if (e.code === "42703") {
+      return res.status(400).send(e.message);
+    }
+
     res.status(500).send(e.message);
   }
 };

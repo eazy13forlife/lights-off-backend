@@ -73,9 +73,9 @@ const updateMediaTableValues = async (mediaId, updateData) => {
 
   values = Object.values(updateData);
 
-  console.log(text);
+  const updateResponse = await poolQuery(text, values);
 
-  const response = await poolQuery(text, values);
+  return updateResponse.rows[0];
 };
 
 const getUpdateText = (updateData) => {

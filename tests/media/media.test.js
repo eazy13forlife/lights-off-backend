@@ -5,6 +5,7 @@ const { poolQuery } = require("../../src/db");
 const { insertDataToMediaTable } = require("../../src/helperFunctions/media");
 const { exampleMedia1, exampleMedia2, clearMediaTable } = require("./fixtures");
 const { exampleUser1, exampleUser2 } = require("../users/fixtures");
+const { findMediaOfUser } = require("../../src/helperFunctions/media");
 const runGlobalSetup = require("../globalSetup");
 
 beforeEach(async () => {
@@ -14,6 +15,18 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await clearMediaTable();
+});
+
+test("Return the correct data when exampleUser1 is trying to find exampleMedia1", async () => {
+  await expect(
+    findMediaOfUser(exampleUser1.user_account_id, exampleMedia1.media_id)
+  ).resolves.toBeDefined();
+});
+
+test("Return undefined if exampleUser2 is trying to find exampleUser1's media that doesn't belong to it", async () => {
+  await expect(
+    findMediaOfUser(exampleUser1.user_account_id, exampleMedia2.media_id)
+  ).resolves.toBeUndefined();
 });
 
 test("Do not throw error if inserting valid data to media table", async () => {

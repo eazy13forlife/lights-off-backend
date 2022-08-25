@@ -17,7 +17,7 @@ const addMedia = async (req, res) => {
 
     const insertedData = response.rows[0];
 
-    res.status(201).send();
+    res.status(201).send(insertedData);
   } catch (e) {
     console.log(e);
     res.status(400).send(e.message);

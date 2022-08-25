@@ -17,13 +17,13 @@ afterEach(async () => {
   await clearMediaTable();
 });
 
-test("Return the correct data when exampleUser1 is trying to find exampleMedia1", async () => {
+test("Return the correct data when exampleUser1 is trying to find exampleMedia1 that they uploaded", async () => {
   await expect(
     findMediaOfUser(exampleUser1.user_account_id, exampleMedia1.media_id)
   ).resolves.toBeDefined();
 });
 
-test("Return undefined if exampleUser2 is trying to find exampleUser1's media that doesn't belong to it", async () => {
+test("Return undefined if exampleUser2 is trying to find exampleUser1's media that user2 didn't uplad", async () => {
   await expect(
     findMediaOfUser(exampleUser1.user_account_id, exampleMedia2.media_id)
   ).resolves.toBeUndefined();
@@ -96,4 +96,36 @@ test("Do not let exampleUser2 delete exampleMedia1 (which belongs to exampleUser
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
     .send()
     .expect(404);
+});
+
+test("Get a 200 code when exampleUser1 correctly updates exampleMedia1 that they uploaded", async () => {
+  await request(app)
+    .patch(`/media/1`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send({ title: "Pick me up" })
+    .expect(200);
+});
+
+test("Get a 200 code when exampleUser1 correctly updates exampleMedia1 that they uploaded", async () => {
+  await request(app)
+    .patch(`/media/1`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send({ title: "Pick me up" })
+    .expect(200);
+});
+
+test("Get a 404 error code when exampleUser2 is trying to update exampleMedia1 that they did not upload", async () => {
+  await request(app)
+    .patch(`/media/1`)
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send({ title: "Pick me up" })
+    .expect(404);
+});
+
+test("Get a 400 error code when exampleUser1 is trying to update an invalid column on exampleMedia1", async () => {
+  await request(app)
+    .patch(`/media/1`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send({ pizza: "cheese" })
+    .expect(400);
 });

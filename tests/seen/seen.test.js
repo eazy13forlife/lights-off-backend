@@ -38,3 +38,11 @@ test("Get a 404 error code when exampleUser2 tries to post exampleMedia1 that th
     .send()
     .expect(404);
 });
+
+test("Get a 404 error code when exampleUser2 tries to post non-existent media  to /seen/:mediaId route", async () => {
+  await request(app)
+    .post("/seen/982")
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});

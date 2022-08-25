@@ -54,7 +54,22 @@ const deleteFromSeen = async (req, res) => {
   }
 };
 
-const getAllSeen = (req, res) => {};
+const getAllSeen = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const seenResponse = await poolQuery(
+      `SELECT * FROM user_seen
+      WHERE user_account_id=${userId}`
+    );
+
+    const allSeen = seenResponse.rows;
+
+    res.send(allSeen);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+};
 
 module.exports = {
   addToSeen,

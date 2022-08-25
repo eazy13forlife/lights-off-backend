@@ -19,7 +19,6 @@ const addMedia = async (req, res) => {
 
     res.status(201).send(insertedData);
   } catch (e) {
-    console.log(e);
     res.status(400).send(e.message);
   }
 };

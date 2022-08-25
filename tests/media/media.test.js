@@ -4,7 +4,11 @@ const app = require("../../src/app");
 const { poolQuery } = require("../../src/db");
 const { insertDataToMediaTable } = require("../../src/helperFunctions/media");
 const { exampleMedia1, exampleMedia2, clearMediaTable } = require("./fixtures");
-const { exampleUser1, exampleUser2 } = require("../users/fixtures");
+const {
+  exampleUser1,
+  exampleUser2,
+  clearUserAccountTable,
+} = require("../users/fixtures");
 const { findMediaOfUser } = require("../../src/helperFunctions/media");
 const runGlobalSetup = require("../globalSetup");
 
@@ -15,6 +19,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await clearMediaTable();
+  await clearUserAccountTable();
 });
 
 test("Return the correct data when exampleUser1 is trying to find exampleMedia1 that they uploaded", async () => {

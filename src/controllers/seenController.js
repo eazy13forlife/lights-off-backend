@@ -6,6 +6,17 @@ const addToSeen = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
+    const mediaResponse = await poolQuery(
+      `SELECT * FROM media
+      WHERE media_id='${mediaId}'`
+    );
+
+    const correspondentUserId = mediaResponse.rows[0].user_account_id;
+
+    if (correspondentUserId !== userId) {
+      return res.status(400).send();
+    }
+
     const response = await poolQuery(
       `INSERT INTO user_seen(user_account_id,media_id) VALUES($1,$2)
       RETURNING *`,

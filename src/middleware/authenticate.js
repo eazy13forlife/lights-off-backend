@@ -13,7 +13,7 @@ const authenticate = async (req, res, next) => {
       `SELECT user_account_id FROM user_auth_token
       WHERE user_account_id=${token.user_account_id} AND auth_token='${authToken}'`
     );
-    console.log(userAuthTokenResponse);
+
     //Send error if cant find that user with authToken
     if (userAuthTokenResponse.rowCount === 0) {
       return res.status(401).send("Unable to validate");

@@ -31,10 +31,10 @@ test("Get a 200 status code when exampleUser1 successfully posts exampleMedia1 t
     .expect(200);
 });
 
-test("Get a 400 error code when exampleUser2 tries to post exampleMedia1 that they didn't upload to /seen/:mediaId route", async () => {
+test("Get a 404 error code when exampleUser2 tries to post exampleMedia1 that they didn't upload to /seen/:mediaId route", async () => {
   await request(app)
     .post("/seen/1")
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
     .send()
-    .expect(400);
+    .expect(404);
 });

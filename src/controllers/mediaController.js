@@ -23,7 +23,7 @@ const addMedia = async (req, res) => {
   }
 };
 
-//gets specific media that user has uploaded
+//gets specific media that user has uploaded. We cant get imdb media, we will use themoviedb api for that
 const getMedia = async (req, res) => {
   try {
     const mediaId = req.params.mediaId;

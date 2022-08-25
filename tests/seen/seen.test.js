@@ -46,3 +46,27 @@ test("Get a 404 error code when exampleUser2 tries to post non-existent media  t
     .send()
     .expect(404);
 });
+
+test("Get a 200 status code when exampleUser1 successfully deletes exampleMedia1", async () => {
+  await request(app)
+    .delete("/seen/1")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 error status code when exampleUser2 tries to delete exampleMedia1 that they didn't upload", async () => {
+  await request(app)
+    .delete("/seen/1")
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});
+
+test("Get a 404 error status code when exampleUser2 tries to delete non-existent media", async () => {
+  await request(app)
+    .delete("/seen/93")
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});

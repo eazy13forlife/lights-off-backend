@@ -76,7 +76,7 @@ test("Do not retrieve exampleMedia1(that exampleUser1 uploaded) for exampleUser2
     .get(`/media/${exampleMedia1.media_id}`)
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
     .send()
-    .expect(400);
+    .expect(404);
 });
 
 test("Do not retrieve nonexistant mediaId for exampleUser2", async () => {
@@ -84,7 +84,7 @@ test("Do not retrieve nonexistant mediaId for exampleUser2", async () => {
     .get(`/media/3232323`)
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
     .send()
-    .expect(400);
+    .expect(404);
 });
 
 test("Delete exampleMedia1 which is uploaded by exampleUser1", async () => {

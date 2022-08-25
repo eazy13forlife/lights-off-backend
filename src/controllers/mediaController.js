@@ -33,7 +33,11 @@ const getMedia = async (req, res) => {
     const media = await findMediaOfUser(userId, mediaId);
 
     if (!media) {
-      return res.status(400).send();
+      return res
+        .status(404)
+        .send(
+          `media_id ${mediaId} is not found for user_account_id ${userId}.`
+        );
     }
 
     res.send(media);
@@ -52,7 +56,11 @@ const deleteMedia = async (req, res) => {
     const media = await findMediaOfUser(userId, mediaId);
 
     if (!media) {
-      return res.status(404).send();
+      return res
+        .status(404)
+        .send(
+          `media_id ${mediaId} is not found for user_account_id ${userId}.`
+        );
     }
 
     const response = await poolQuery(
@@ -78,7 +86,11 @@ const updateMedia = async (req, res) => {
     const media = await findMediaOfUser(userId, mediaId);
 
     if (!media) {
-      return res.status(404).send();
+      return res
+        .status(404)
+        .send(
+          `media_id ${mediaId} is not found for user_account_id ${userId}.`
+        );
     }
 
     const updatedMedia = await updateMediaTableValues(mediaId, updateData);

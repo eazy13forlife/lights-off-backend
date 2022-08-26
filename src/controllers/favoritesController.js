@@ -5,14 +5,14 @@ const getAllFavorites = async (req, res) => {
   try {
     const userId = req.user.user_account_id;
 
-    const favoritesResponse = await poolQuery(
+    const getAllResponse = await poolQuery(
       `SELECT * FROM user_favorite
       INNER JOIN media
       ON user_favorite.media_id=media.media_id
       WHERE user_favorite.user_account_id=${userId}`
     );
 
-    const allFavorites = favoritesResponse.rows;
+    const allFavorites = getAllResponse.rows;
 
     res.send(allFavorites);
   } catch (e) {
@@ -37,7 +37,7 @@ const addToFavorites = async (req, res) => {
         .send(shouldPreventAccess.errorMessage);
     }
 
-    const favoritesResponse = await poolQuery(
+    const insertResponse = await poolQuery(
       `INSERT INTO user_favorite(user_account_id,media_id) VALUES($1,$2)`,
       [userId, mediaId]
     );
@@ -54,12 +54,12 @@ const deleteFromFavorites = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const favoritesResponse = await poolQuery(`
+    const deleteResponse = await poolQuery(`
     DELETE FROM user_favorite
     WHERE media_id='${mediaId}' AND user_account_id=${userId}
     `);
 
-    if (favoritesResponse.rowCount === 0) {
+    if (deleteResponse.rowCount === 0) {
       return res
         .status(404)
         .send(

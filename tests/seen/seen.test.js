@@ -41,7 +41,7 @@ afterEach(async () => {
   await clearUserAccountTable();
 });
 
-test("Get a 200 status code when exampleUser1 successfully posts exampleMedia1b to /seen/:mediaId route", async () => {
+test("Get a 200 status code when exampleUser1 successfully adds exampleMedia1b to their seen", async () => {
   await request(app)
     .post("/seen/1b")
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -49,7 +49,7 @@ test("Get a 200 status code when exampleUser1 successfully posts exampleMedia1b 
     .expect(200);
 });
 
-test("Get a 200 status code when exampleUser1 successfully an imdbMovie to /seen/:mediaId route", async () => {
+test("Get a 200 status code when exampleUser1 successfully adds imdbMovie to their seen", async () => {
   await request(app)
     .post(`/seen/${imdbMedia1.media_id}`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -57,7 +57,7 @@ test("Get a 200 status code when exampleUser1 successfully an imdbMovie to /seen
     .expect(200);
 });
 
-test("Get a 404 error code when exampleUser2 tries to post exampleMedia1 that they didn't upload to /seen/:mediaId route", async () => {
+test("Get a 404 error code when exampleUser2 tries to add exampleMedia1 that they didn't upload to their seen", async () => {
   await request(app)
     .post("/seen/1")
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
@@ -65,7 +65,7 @@ test("Get a 404 error code when exampleUser2 tries to post exampleMedia1 that th
     .expect(404);
 });
 
-test("Get a 404 error code when exampleUser2 tries to post non-existent media  to /seen/:mediaId route", async () => {
+test("Get a 404 error code when exampleUser2 tries to add non-existent media in the database to their seen", async () => {
   await request(app)
     .post("/seen/982")
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
@@ -73,7 +73,7 @@ test("Get a 404 error code when exampleUser2 tries to post non-existent media  t
     .expect(404);
 });
 
-test("Get a 200 status code when exampleUser1 successfully deletes exampleMedia1 from seen", async () => {
+test("Get a 200 status code when exampleUser1 successfully deletes exampleMedia1 from their seen", async () => {
   await request(app)
     .delete("/seen/1")
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)

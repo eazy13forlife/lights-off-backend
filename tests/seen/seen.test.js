@@ -31,6 +31,7 @@ beforeEach(async () => {
   await addMediaToSeen(exampleUser1.user_account_id, exampleMedia1a.media_id);
 });
 
+//to avoid foreign key errors
 //user_seen depends on media and user_account table so clear user_seen first
 //media table depends on user_account table so clear media table second
 //clear user_account table last

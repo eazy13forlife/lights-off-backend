@@ -5,6 +5,7 @@ const {
 } = require("../helperFunctions/media");
 const { poolQuery, getClient } = require("../db");
 
+//adds both imdb and user uploaded media
 const addMedia = async (req, res) => {
   try {
     const mediaData = req.body;

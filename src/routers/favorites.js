@@ -9,7 +9,7 @@ const {
 } = require("../controllers/favoritesController");
 
 //get all favorites of signed in user
-router.get("/favorites");
+router.get("/favorites", authenticateMiddleware, getAllFavorites);
 
 //add media to favorites
 router.post("/favorites/:mediaId", authenticateMiddleware, addToFavorites);

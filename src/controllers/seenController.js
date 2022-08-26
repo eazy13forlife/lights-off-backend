@@ -70,7 +70,9 @@ const getAllSeen = async (req, res) => {
 
     const seenResponse = await poolQuery(
       `SELECT * FROM user_seen
-      WHERE user_account_id=${userId}`
+      INNER JOIN media
+      ON user_seen.media_id=media.media_id
+      WHERE user_seen.user_account_id=${userId}`
     );
 
     const allSeen = seenResponse.rows;

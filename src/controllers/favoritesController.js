@@ -1,7 +1,24 @@
 const { preventUserAccessingMedia } = require("../helperFunctions/media");
 const { poolQuery } = require("../db");
 
-const getAllFavorites = (req, res) => {};
+const getAllFavorites = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const favoritesResponse = await poolQuery(
+      `SELECT * FROM user_favorite
+      INNER JOIN media
+      ON user_favorite.media_id=media.media_id
+      WHERE user_favorite.user_account_id=${userId}`
+    );
+
+    const allFavorites = favoritesResponse.rows;
+
+    res.send(allFavorites);
+  } catch (e) {
+    res.status(400).send();
+  }
+};
 
 const addToFavorites = async (req, res) => {
   try {

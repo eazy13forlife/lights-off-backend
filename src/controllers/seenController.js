@@ -1,5 +1,7 @@
 const { poolQuery } = require("../db");
-const { findMediaOfUser } = require("../../src/helperFunctions/media/index.js");
+const {
+  preventUserAccessingMedia,
+} = require("../../src/helperFunctions/media/index.js");
 
 //user can add any imdb movie and any movie theyve uploaded to seen
 const addToSeen = async (req, res) => {
@@ -8,28 +10,17 @@ const addToSeen = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const mediaResponse = await poolQuery(
-      `SELECT * FROM media
-      WHERE media_id='${mediaId}'`
+    const shouldPreventAccess = await preventUserAccessingMedia(
+      userId,
+      mediaId
     );
 
-    //the media is not found at all in mediaTable
-    if (mediaResponse.rowCount === 0) {
-      return res.status(404).send(`media_id ${mediaId} is not found.`);
-    }
-
-    const userIdForMedia = mediaResponse.rows[0].user_account_id;
-
-    //the userId exists for the media but doesnt match the userId of current user
-    if (userIdForMedia && userIdForMedia !== userId) {
+    if (shouldPreventAccess) {
       return res
-        .status(404)
-        .send(
-          `media_id ${mediaId} is not found for user_account_id ${userId}.`
-        );
+        .status(shouldPreventAccess.errorCode)
+        .send(shouldPreventAccess.errorMessage);
     }
 
-    //either no userId associated with the media, meaning its imdb or ids match so we can add to seen
     const insertResponse = await poolQuery(
       `INSERT INTO user_seen(user_account_id,media_id) VALUES($1,$2)
         RETURNING *`,

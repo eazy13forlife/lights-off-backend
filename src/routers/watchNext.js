@@ -9,7 +9,7 @@ const {
 } = require("../controllers/watchNextController");
 
 //get all watch next media
-router.get("/watch-next");
+router.get("/watch-next", authenticateMiddleware, getAllWatchNext);
 
 //delete a specific media from watch next
 router.delete(

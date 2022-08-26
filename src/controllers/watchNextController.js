@@ -67,6 +67,23 @@ const deleteFromWatchNext = async (req, res) => {
   }
 };
 
-const getAllWatchNext = (req, res) => {};
+const getAllWatchNext = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const response = await poolQuery(
+      `SELECT * FROM user_watch_next
+      INNER JOIN media
+      ON user_watch_next.media_id=media.media_id
+      WHERE user_watch_next.user_account_id=${userId}`
+    );
+
+    const allWatchNext = response.rows;
+
+    res.send(allWatchNext);
+  } catch (e) {
+    res.status(400).send();
+  }
+};
 
 module.exports = { addToWatchNext, deleteFromWatchNext, getAllWatchNext };

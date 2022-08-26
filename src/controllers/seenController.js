@@ -27,9 +27,7 @@ const addToSeen = async (req, res) => {
       [userId, mediaId]
     );
 
-    const insertedData = insertResponse.rows[0];
-
-    res.send(insertedData);
+    res.send();
   } catch (e) {
     res.status(400).send(e.message);
   }

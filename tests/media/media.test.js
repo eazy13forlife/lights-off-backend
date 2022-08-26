@@ -169,3 +169,31 @@ test("Get a 400 error code when exampleUser1 is trying to update an invalid colu
     .send({ pizza: "cheese" })
     .expect(400);
 });
+
+test("Get a 200 code when exampleUser1 tries to retrieve all their uploads", async () => {
+  await request(app)
+    .get("/uploads/me")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get 1 result when exampleUser1 tries to retrieve all their uploads", async () => {
+  const response = await request(app)
+    .get("/uploads/me")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.length).toBe(1);
+});
+
+test("Get 0 results when exampleUser2 tries to retrieve all their uploads", async () => {
+  const response = await request(app)
+    .get("/uploads/me")
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.length).toBe(0);
+});

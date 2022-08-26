@@ -12,26 +12,44 @@ const {
 const {
   exampleMedia1,
   exampleMedia1a,
+  exampleMedia1b,
+  imdbMedia1,
   clearMediaTable,
 } = require("../media/fixtures");
-const clearUserSeenTable = require("./fixtures");
+const { clearUserSeenTable, addMediaToSeen } = require("./fixtures");
 
+//user1 uploads 3 media: media1,media1a and media1b
+//user1 adds media1 and media1a to their seen
 beforeEach(async () => {
   await runGlobalSetup();
+  await insertDataToMediaTable("poolQuery", poolQuery, imdbMedia1);
   await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1);
   await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1a);
-  //insert two medias to seen as well so we can use in example
+  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1b);
+  await addMediaToSeen(exampleUser1.user_account_id, exampleMedia1.media_id);
+  await addMediaToSeen(exampleUser1.user_account_id, exampleMedia1a.media_id);
 });
 
+//user_seen depends on media and user_account table so clear user_seen first
+//media table depends on user_account table so clear media table second
+//clear user_account table last
 afterEach(async () => {
   await clearUserSeenTable();
   await clearMediaTable();
   await clearUserAccountTable();
 });
 
-test("Get a 200 status code when exampleUser1 successfully posts exampleMedia1 to /seen/:mediaId route", async () => {
+test("Get a 200 status code when exampleUser1 successfully posts exampleMedia1b to /seen/:mediaId route", async () => {
   await request(app)
-    .post("/seen/1")
+    .post("/seen/1b")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 200 status code when exampleUser1 successfully an imdbMovie to /seen/:mediaId route", async () => {
+  await request(app)
+    .post(`/seen/${imdbMedia1.media_id}`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
     .send()
     .expect(200);
@@ -92,5 +110,5 @@ test("Get a count of 2 when exampleUser1 makes a get request to /seen to get bot
     .send()
     .expect(200);
 
-  expect(response.body).toBeNull();
+  expect(response.body.length).toBe(2);
 });

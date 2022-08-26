@@ -21,7 +21,7 @@ const addToSeen = async (req, res) => {
     const userIdForMedia = mediaResponse.rows[0].user_account_id;
 
     //the userId exists for the media but doesnt match the userId of current user
-    if (userIdForMedia !== userId) {
+    if (userIdForMedia && userIdForMedia !== userId) {
       return res
         .status(404)
         .send(

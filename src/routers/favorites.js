@@ -15,6 +15,10 @@ router.get("/favorites");
 router.post("/favorites/:mediaId", authenticateMiddleware, addToFavorites);
 
 //delete specific media from favorites
-router.delete("/favorites/:mediaId");
+router.delete(
+  "/favorites/:mediaId",
+  authenticateMiddleware,
+  deleteFromFavorites
+);
 
 module.exports = router;

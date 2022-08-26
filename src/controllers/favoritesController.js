@@ -31,7 +31,30 @@ const addToFavorites = async (req, res) => {
   }
 };
 
-const deleteFromFavorites = (req, res) => {};
+const deleteFromFavorites = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const favoritesResponse = await poolQuery(`
+    DELETE FROM user_favorite
+    WHERE media_id='${mediaId}' AND user_account_id=${userId}
+    `);
+
+    if (favoritesResponse.rowCount === 0) {
+      return res
+        .status(404)
+        .send(
+          `media_id ${mediaId} is not found for user_account_id ${userId}.`
+        );
+    }
+
+    res.send();
+  } catch (e) {
+    res.status(400).send();
+  }
+};
 
 module.exports = {
   getAllFavorites,

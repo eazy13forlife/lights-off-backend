@@ -20,13 +20,22 @@ const { addMediaToFavorites, clearUserFavoriteTable } = require("./fixtures");
 
 //after globalSetup
 //imdbMedia1 is uploaded to media table
-//exampleUser1 uploads exampleMedia1 and exampleMedia1a
-//exampleUser1 adds exampleMedia1 to their favorites
+//exampleUser1 uploads exampleMedia1,exampleMedia1a,exampleMedia1b
+//exampleUser1 adds exampleMedia1 and exampleMedia1a to their favorites
 beforeEach(async () => {
   await runGlobalSetup();
   await insertDataToMediaTable("poolQuery", poolQuery, imdbMedia1);
   await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1);
   await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1a);
+  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1b);
+  await addMediaToFavorites(
+    exampleUser1.user_account_id,
+    exampleMedia1.media_id
+  );
+  await addMediaToFavorites(
+    exampleUser1.user_account_id,
+    exampleMedia1a.media_id
+  );
 });
 
 //to avoid foreign key errors,
@@ -39,17 +48,9 @@ afterEach(async () => {
   await clearUserAccountTable();
 });
 
-test("Get a 200 code when exampleUser1 adds exampleMedia1 to their favorites", async () => {
+test("Get a 200 code when exampleUser1 adds exampleMedia1b to their favorites", async () => {
   await request(app)
-    .post("/favorites/1")
-    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
-    .send()
-    .expect(200);
-});
-
-test("Get a 200 code when exampleUser1 adds imdbMedia1 to their favorites", async () => {
-  await request(app)
-    .post(`/favorites/${imdbMedia1.media_id}`)
+    .post("/favorites/1b")
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
     .send()
     .expect(200);
@@ -74,6 +75,30 @@ test("Get a 404 error code when exampleUser2 tries to add exampleMedia1 that the
 test("Get a 404 error code when exampleUser2 tries to add non-existent media to their favorites", async () => {
   await request(app)
     .post(`/favorites/434`)
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});
+
+test("Get a 200 code when exampleUser1 deletes exampleMedia1 that they uploaded from their favorites", async () => {
+  await request(app)
+    .delete(`/favorites/1`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 code when exampleUser2 tries to delete exampleMedia1 that they did not upload from their favorites", async () => {
+  await request(app)
+    .delete(`/favorites/1`)
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});
+
+test("Get a 404 code when exampleUser2 tries to delete non-existent media from their favorites", async () => {
+  await request(app)
+    .delete(`/favorites/34`)
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
     .send()
     .expect(404);

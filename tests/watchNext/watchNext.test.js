@@ -98,10 +98,28 @@ test("Get a 404 status code when exampleUser2 tries to delete exampleMedia1 they
     .expect(404);
 });
 
-test("Get a 404 status code when exampleUser2 tries to delete non-existent media in database from their their watch next.", async () => {
+test("Get a 404 status code when exampleUser2 tries to delete non-existent media in database from their watch next.", async () => {
   await request(app)
     .delete(`/watch-next/423`)
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
     .send()
     .expect(404);
+});
+
+test("Get a 200 status code when exampleUser1 tries to get all media from their watch next.", async () => {
+  await request(app)
+    .get("/watch-next")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get 2 media items back when exampleUser1 tries to get all media from their watch next.", async () => {
+  const response = await request(app)
+    .get("/watch-next")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.length).toBe(2);
 });

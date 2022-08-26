@@ -3,17 +3,28 @@ const request = require("supertest");
 const app = require("../../src/app");
 const { poolQuery } = require("../../src/db");
 const { insertDataToMediaTable } = require("../../src/helperFunctions/media");
-const { exampleMedia1, exampleMedia2, clearMediaTable } = require("./fixtures");
+const {
+  exampleMedia1,
+  exampleMedia2,
+  imdbMedia1,
+  clearMediaTable,
+} = require("./fixtures");
 const {
   exampleUser1,
   exampleUser2,
   clearUserAccountTable,
 } = require("../users/fixtures");
-const { findMediaOfUser } = require("../../src/helperFunctions/media");
+const {
+  findMediaOfUser,
+  preventUserAccessingMedia,
+} = require("../../src/helperFunctions/media");
 const runGlobalSetup = require("../globalSetup");
 
+//imdbMedia1 is added to media
+//user1 uploads exampleMedia1
 beforeEach(async () => {
   await runGlobalSetup();
+  await insertDataToMediaTable("poolQuery", poolQuery, imdbMedia1);
   await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1);
 });
 
@@ -22,13 +33,37 @@ afterEach(async () => {
   await clearUserAccountTable();
 });
 
+test("Do not prevent exampleUser1 from accessing exampleMedia1 that they uploaded, so preventUserAccessingMedia should return false", async () => {
+  await expect(
+    preventUserAccessingMedia(
+      exampleUser1.user_account_id,
+      exampleMedia1.media_id
+    )
+  ).resolves.toBeFalsy();
+});
+
+test("Do not prevent exampleUser1 from accessing imdbMedia, so preventUserAccessingMedia should return false", async () => {
+  await expect(
+    preventUserAccessingMedia(exampleUser1.user_account_id, imdbMedia1.media_id)
+  ).resolves.toBeFalsy();
+});
+
+test("Prevent exampleUser2 from accessing exampleMedia1 that they didnt upload, so preventUserAccessingMedia should return the errorObject", async () => {
+  await expect(
+    preventUserAccessingMedia(
+      exampleUser2.user_account_id,
+      exampleMedia1.media_id
+    )
+  ).resolves.toBeTruthy();
+});
+
 test("Return the correct data when exampleUser1 is trying to find exampleMedia1 that they uploaded", async () => {
   await expect(
     findMediaOfUser(exampleUser1.user_account_id, exampleMedia1.media_id)
   ).resolves.toBeDefined();
 });
 
-test("Return undefined if exampleUser2 is trying to find exampleUser1's media that user2 didn't uplad", async () => {
+test("Return undefined if exampleUser2 is trying to find exampleUser1's media that user2 didn't upload", async () => {
   await expect(
     findMediaOfUser(exampleUser1.user_account_id, exampleMedia2.media_id)
   ).resolves.toBeUndefined();
@@ -63,7 +98,7 @@ test("Expect 400 response when exampleUser2 is uploading media data with missing
     .expect(400);
 });
 
-test("Retrieve exampleMedia1 that exampleUser1 uploaded", async () => {
+test("Get a 200 response when exampleUser1 is retrieving exampleMedia1 that they uploaded", async () => {
   await request(app)
     .get(`/media/${exampleMedia1.media_id}`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -71,7 +106,7 @@ test("Retrieve exampleMedia1 that exampleUser1 uploaded", async () => {
     .expect(200);
 });
 
-test("Do not retrieve exampleMedia1(that exampleUser1 uploaded) for exampleUser2", async () => {
+test("Get a 404 error code when exampleUser2 is trying to retrieve exampleMedia1(that exampleUser1 uploaded)", async () => {
   await request(app)
     .get(`/media/${exampleMedia1.media_id}`)
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
@@ -79,7 +114,7 @@ test("Do not retrieve exampleMedia1(that exampleUser1 uploaded) for exampleUser2
     .expect(404);
 });
 
-test("Do not retrieve nonexistant mediaId for exampleUser2", async () => {
+test("Get a 404 error code when exampleUser2 is trying to retrieve a nonexistant mediaId", async () => {
   await request(app)
     .get(`/media/3232323`)
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)
@@ -87,7 +122,7 @@ test("Do not retrieve nonexistant mediaId for exampleUser2", async () => {
     .expect(404);
 });
 
-test("Delete exampleMedia1 which is uploaded by exampleUser1", async () => {
+test("Get a 200 code when exampleUser1 deleted exampleMedia1 that they uploaded", async () => {
   await request(app)
     .delete("/media/1")
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -95,7 +130,7 @@ test("Delete exampleMedia1 which is uploaded by exampleUser1", async () => {
     .expect(200);
 });
 
-test("Do not let exampleUser2 delete exampleMedia1 (which belongs to exampleUser1)", async () => {
+test("Get a 404 error code when exampleUser2 tries to delete exampleMedia1 (which belongs to exampleUser1)", async () => {
   await request(app)
     .delete("/media/1")
     .set("Authorization", `Bearer ${exampleUser2.authToken}`)

@@ -18,6 +18,7 @@ const {
 } = require("../media/fixtures");
 const { clearUserSeenTable, addMediaToSeen } = require("./fixtures");
 
+//imdbMedia1 is added to media
 //user1 uploads 3 media: media1,media1a and media1b
 //user1 adds media1 and media1a to their seen
 beforeEach(async () => {

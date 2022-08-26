@@ -40,7 +40,7 @@ const addToSeen = async (req, res) => {
 
     res.send(insertedData);
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(400).send(e.message);
   }
 };
 
@@ -71,7 +71,7 @@ const deleteFromSeen = async (req, res) => {
 
     res.send();
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(400).send(e.message);
   }
 };
 
@@ -88,7 +88,7 @@ const getAllSeen = async (req, res) => {
 
     res.send(allSeen);
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(400).send(e.message);
   }
 };
 

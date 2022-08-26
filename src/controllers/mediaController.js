@@ -42,7 +42,7 @@ const getMedia = async (req, res) => {
 
     res.send(media);
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(400).send(e.message);
   }
 };
 
@@ -70,7 +70,7 @@ const deleteMedia = async (req, res) => {
 
     res.status(200).send();
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(400).send(e.message);
   }
 };
 
@@ -97,12 +97,7 @@ const updateMedia = async (req, res) => {
 
     res.send(updatedMedia);
   } catch (e) {
-    //user is trying to update a column that doesn't exist
-    if (e.code === "42703") {
-      return res.status(400).send(e.message);
-    }
-
-    res.status(500).send(e.message);
+    res.status(400).send(e.message);
   }
 };
 

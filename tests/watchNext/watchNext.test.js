@@ -81,3 +81,27 @@ test("Get a 404 status code when exampleUser2 tries to add non-existent media in
     .send()
     .expect(404);
 });
+
+test("Get a 200 status code when exampleUser1 successfully deletes exampleMedia1 they uploaded from their watch next.", async () => {
+  await request(app)
+    .delete(`/watch-next/1`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 status code when exampleUser2 tries to delete exampleMedia1 they didnt upload from their watch next.", async () => {
+  await request(app)
+    .delete(`/watch-next/1`)
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});
+
+test("Get a 404 status code when exampleUser2 tries to delete non-existent media in database from their their watch next.", async () => {
+  await request(app)
+    .delete(`/watch-next/423`)
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});

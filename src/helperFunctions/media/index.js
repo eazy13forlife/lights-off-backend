@@ -77,7 +77,7 @@ const preventUserAccessingMedia = async (userId, mediaId) => {
     };
   }
 
-  //if no userId means imdb movie so user has access. If userId for media matches with userId, its theirs so they have access
+  //if no userId means imdb movie so user has access. And if there is a  userId for media that matches with current userId, its theirs so they have access
   return false;
 };
 

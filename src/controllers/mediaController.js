@@ -1,7 +1,10 @@
 const { poolQuery } = require("../db");
 const { insertDataToMediaTable } = require("../helperFunctions/media");
-
 const updateTableValues = require("../helperFunctions/global");
+
+const noRecordMessage = (userId, mediaId) => {
+  return `media_id ${mediaId} is not found for user_account_id ${userId}.`;
+};
 
 //adds both imdb and user uploaded media
 const addMedia = async (req, res) => {
@@ -35,11 +38,7 @@ const getMedia = async (req, res) => {
     );
 
     if (response.rowCount === 0) {
-      return res
-        .status(404)
-        .send(
-          `media_id ${mediaId} is not found for user_account_id ${userId}.`
-        );
+      return res.status(404).send(noRecordMessage(userId, mediaId));
     }
     res.send(response.rows);
   } catch (e) {
@@ -60,11 +59,7 @@ const deleteMedia = async (req, res) => {
     );
 
     if (response.rowCount === 0) {
-      return res
-        .status(404)
-        .send(
-          `media_id ${mediaId} is not found for user_account_id ${userId}.`
-        );
+      return res.status(404).send(noRecordMessage(userId, mediaId));
     }
 
     res.status(200).send(response.rows);
@@ -89,9 +84,7 @@ const updateMedia = async (req, res) => {
     );
 
     if (updateResponse.rowCount == 0) {
-      return res
-        .status(404)
-        .send(`media_id ${mediaId} is not found for user_account_id ${userId}`);
+      return res.status(404).send(noRecordMessage(userId, mediaId));
     }
 
     res.send(updateResponse.rows);

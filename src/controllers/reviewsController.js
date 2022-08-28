@@ -3,6 +3,10 @@ const { poolQuery } = require("../db");
 const { preventUserAccessingMedia } = require("../helperFunctions/media");
 const updateTableValues = require("../helperFunctions/global");
 
+const noRecordMessage = (userId, mediaId) => {
+  return `A review for media_id ${mediaId} does not exist for user_account_id ${userId}`;
+};
+
 //user can add review for any imdb movie and their uploaded movie
 const addReview = async (req, res) => {
   try {
@@ -47,11 +51,7 @@ const editReview = async (req, res) => {
     );
 
     if (updateResponse.rowCount === 0) {
-      return res
-        .status(404)
-        .send(
-          `A review for media_id ${mediaId} does not exist for user_account_id ${userId}`
-        );
+      return res.status(404).send(noRecordMessage(userId, mediaId));
     }
 
     res.send(updateResponse.rows);

@@ -2,7 +2,7 @@ const express = require("express");
 const router = new express.Router();
 
 const authenticateMiddleware = require("../middleware/authenticate");
-const { addReview } = require("../controllers/reviewsController");
+const { addReview, editReview } = require("../controllers/reviewsController");
 
 //get all reviews for a specific media
 router.get("/reviews/:mediaId");
@@ -11,7 +11,7 @@ router.get("/reviews/:mediaId");
 router.post("/reviews/:mediaId", authenticateMiddleware, addReview);
 
 //update a review for a specific media
-router.patch("/reviews/:mediaId");
+router.patch("/reviews/:mediaId", authenticateMiddleware, editReview);
 
 //delete a review for a specific media
 router.delete("/reviews/:mediaId");

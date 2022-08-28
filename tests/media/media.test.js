@@ -57,18 +57,6 @@ test("Prevent exampleUser2 from accessing exampleMedia1 that they didnt upload, 
   ).resolves.toBeTruthy();
 });
 
-test("Return the correct data when exampleUser1 is trying to find exampleMedia1 that they uploaded", async () => {
-  await expect(
-    findMediaOfUser(exampleUser1.user_account_id, exampleMedia1.media_id)
-  ).resolves.toBeDefined();
-});
-
-test("Return undefined if exampleUser2 is trying to find exampleUser1's media that user2 didn't upload", async () => {
-  await expect(
-    findMediaOfUser(exampleUser1.user_account_id, exampleMedia2.media_id)
-  ).resolves.toBeUndefined();
-});
-
 test("Do not throw error if inserting valid data to media table", async () => {
   await expect(
     insertDataToMediaTable("poolQuery", poolQuery, exampleMedia2)

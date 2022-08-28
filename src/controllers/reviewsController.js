@@ -28,8 +28,6 @@ const addReview = async (req, res) => {
       [userId, mediaId, review, rating]
     );
 
-    console.log(insertResponse);
-
     res.status(201).send(insertResponse.rows[0]);
   } catch (e) {
     res.status(400).send(e.message);

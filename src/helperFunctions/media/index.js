@@ -81,52 +81,7 @@ const preventUserAccessingMedia = async (userId, mediaId) => {
   return false;
 };
 
-const findMediaOfUser = async (userId, mediaId) => {
-  const mediaResponse = await poolQuery(`
-  SELECT * FROM (SELECT * FROM media WHERE media_id='${mediaId}') AS derived_table
-  WHERE user_account_id=${userId}`);
-
-  if (mediaResponse.rowCount === 0) {
-    return undefined;
-  }
-
-  return mediaResponse.rows[0];
-};
-
-const updateMediaTableValues = async (mediaId, updateData) => {
-  let text = `UPDATE media
-  SET ${getUpdateText(updateData)}
-  WHERE media_id='${mediaId}'
-  RETURNING *`;
-
-  values = Object.values(updateData);
-
-  const updateResponse = await poolQuery(text, values);
-
-  return updateResponse.rows[0];
-};
-
-const getUpdateText = (updateData) => {
-  const columns = Object.keys(updateData);
-
-  let text = "";
-
-  for (let i = 0; i < columns.length; i++) {
-    let currentColValString = `${columns[i]}=$${i + 1}`;
-
-    text += currentColValString;
-
-    if (i !== columns.length - 1) {
-      text += ",";
-    }
-  }
-
-  return text;
-};
-
 module.exports = {
   insertDataToMediaTable,
-  findMediaOfUser,
-  updateMediaTableValues,
   preventUserAccessingMedia,
 };

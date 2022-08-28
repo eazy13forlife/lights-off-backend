@@ -1,9 +1,7 @@
-const {
-  insertDataToMediaTable,
-  findMediaOfUser,
-  updateMediaTableValues,
-} = require("../helperFunctions/media");
-const { poolQuery, getClient } = require("../db");
+const { poolQuery } = require("../db");
+const { insertDataToMediaTable } = require("../helperFunctions/media");
+
+const updateTableValues = require("../helperFunctions/global");
 
 //adds both imdb and user uploaded media
 const addMedia = async (req, res) => {
@@ -31,17 +29,19 @@ const getMedia = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const media = await findMediaOfUser(userId, mediaId);
+    const response = await poolQuery(
+      `SELECT * FROM media
+        WHERE media_id='${mediaId}' AND user_account_id=${userId}`
+    );
 
-    if (!media) {
+    if (response.rowCount === 0) {
       return res
         .status(404)
         .send(
           `media_id ${mediaId} is not found for user_account_id ${userId}.`
         );
     }
-
-    res.send(media);
+    res.send(response.rows);
   } catch (e) {
     res.status(400).send(e.message);
   }
@@ -54,9 +54,12 @@ const deleteMedia = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const media = await findMediaOfUser(userId, mediaId);
+    const response = await poolQuery(
+      `DELETE FROM media
+      WHERE media_id='${mediaId}' AND user_account_id=${userId}`
+    );
 
-    if (!media) {
+    if (response.rowCount === 0) {
       return res
         .status(404)
         .send(
@@ -64,12 +67,7 @@ const deleteMedia = async (req, res) => {
         );
     }
 
-    const response = await poolQuery(
-      `DELETE FROM media
-      WHERE media_id='${mediaId}'`
-    );
-
-    res.status(200).send();
+    res.status(200).send(response.rows);
   } catch (e) {
     res.status(400).send(e.message);
   }
@@ -84,19 +82,19 @@ const updateMedia = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const media = await findMediaOfUser(userId, mediaId);
+    const updateResponse = await updateTableValues(
+      "media",
+      updateData,
+      `media_id='${mediaId}' AND user_account_id=${userId}`
+    );
 
-    if (!media) {
+    if (updateResponse.rowCount == 0) {
       return res
         .status(404)
-        .send(
-          `media_id ${mediaId} is not found for user_account_id ${userId}.`
-        );
+        .send(`media_id ${mediaId} is not found for user_account_id ${userId}`);
     }
 
-    const updatedMedia = await updateMediaTableValues(mediaId, updateData);
-
-    res.send(updatedMedia);
+    res.send(updateResponse.rows);
   } catch (e) {
     res.status(400).send(e.message);
   }

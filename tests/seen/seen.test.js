@@ -3,7 +3,7 @@ const request = require("supertest");
 const { poolQuery } = require("../../src/db");
 const app = require("../../src/app");
 const runGlobalSetup = require("../globalSetup");
-const { insertDataToMediaTable } = require("../../src/helperFunctions/media");
+const { insertDataToTable } = require("../../src/helperFunctions/global");
 const {
   exampleUser1,
   exampleUser2,
@@ -23,10 +23,10 @@ const { clearUserSeenTable, addMediaToSeen } = require("./fixtures");
 //user1 adds media1 and media1a to their seen
 beforeEach(async () => {
   await runGlobalSetup();
-  await insertDataToMediaTable("poolQuery", poolQuery, imdbMedia1);
-  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1);
-  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1a);
-  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1b);
+  await insertDataToTable("media", imdbMedia1);
+  await insertDataToTable("media", exampleMedia1);
+  await insertDataToTable("media", exampleMedia1a);
+  await insertDataToTable("media", exampleMedia1b);
   await addMediaToSeen(exampleUser1.user_account_id, exampleMedia1.media_id);
   await addMediaToSeen(exampleUser1.user_account_id, exampleMedia1a.media_id);
 });

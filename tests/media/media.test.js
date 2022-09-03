@@ -2,10 +2,11 @@ const request = require("supertest");
 
 const app = require("../../src/app");
 const { poolQuery } = require("../../src/db");
-const { insertDataToMediaTable } = require("../../src/helperFunctions/media");
+const { insertDataToTable } = require("../../src/helperFunctions/global.js");
 const {
   exampleMedia1,
   exampleMedia2,
+  exampleMedia1b,
   imdbMedia1,
   clearMediaTable,
 } = require("./fixtures");
@@ -15,7 +16,6 @@ const {
   clearUserAccountTable,
 } = require("../users/fixtures");
 const {
-  findMediaOfUser,
   preventUserAccessingMedia,
 } = require("../../src/helperFunctions/media");
 const runGlobalSetup = require("../globalSetup");
@@ -24,13 +24,21 @@ const runGlobalSetup = require("../globalSetup");
 //user1 uploads exampleMedia1
 beforeEach(async () => {
   await runGlobalSetup();
-  await insertDataToMediaTable("poolQuery", poolQuery, imdbMedia1);
-  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1);
+  await insertDataToTable("media", imdbMedia1);
+  await insertDataToTable("media", exampleMedia1);
 });
 
 afterEach(async () => {
   await clearMediaTable();
   await clearUserAccountTable();
+});
+
+test("Return a resolved promise when exampleUser1 tries to upload successful exampleMedia1", async () => {
+  expect(insertDataToTable("media", exampleMedia1b)).resolves.not.toThrow();
+});
+
+test("Throw an error when exampleUser1 tries to upload incomplete or incorrect media data", async () => {
+  expect(insertDataToTable("media", { title: "Hey" })).rejects.toThrow();
 });
 
 test("Do not prevent exampleUser1 from accessing exampleMedia1 that they uploaded, so preventUserAccessingMedia should return false", async () => {
@@ -59,14 +67,14 @@ test("Prevent exampleUser2 from accessing exampleMedia1 that they didnt upload, 
 
 test("Do not throw error if inserting valid data to media table", async () => {
   await expect(
-    insertDataToMediaTable("poolQuery", poolQuery, exampleMedia2)
+    insertDataToTable("media", exampleMedia2)
   ).resolves.not.toThrow();
 });
 
 test("Throw error if inserting invalid data to media table", async () => {
   //required values are missing
   await expect(
-    insertDataToMediaTable("poolQuery", poolQuery, { media_id: "5dfd" })
+    insertDataToTable("media", { media_id: "5dfd" })
   ).rejects.toThrow();
 });
 

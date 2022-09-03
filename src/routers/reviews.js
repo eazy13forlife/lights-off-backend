@@ -2,10 +2,14 @@ const express = require("express");
 const router = new express.Router();
 
 const authenticateMiddleware = require("../middleware/authenticate");
-const { addReview, editReview } = require("../controllers/reviewsController");
+const {
+  addReview,
+  editReview,
+  getReviewsForMedia,
+} = require("../controllers/reviewsController");
 
 //get all reviews for a specific media
-router.get("/reviews/:mediaId");
+router.get("/reviews/:mediaId", authenticateMiddleware, getReviewsForMedia);
 
 //add a review for a specific media
 router.post("/reviews/:mediaId", authenticateMiddleware, addReview);

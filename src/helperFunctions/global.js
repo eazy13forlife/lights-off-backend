@@ -41,7 +41,9 @@ const insertDataToTable = async (table, data) => {
     tableColumns.length
   )}) RETURNING *`;
 
-  return await poolQuery(text, columnValues);
+  const insertResponse = await poolQuery(text, columnValues);
+
+  return insertResponse;
 };
 
 // if (connectionType === "client") {

@@ -42,7 +42,6 @@ const addReview = async (req, res) => {
 
     res.status(201).send(insertResponse.rows[0]);
   } catch (e) {
-    console.log(e.message);
     res.status(400).send(e.message);
   }
 };
@@ -69,7 +68,31 @@ const editReview = async (req, res) => {
   }
 };
 
-const getReviewsForMedia = (req, res) => {};
+const getReviewsForMedia = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const mediaResponse = await poolQuery(
+      `SELECT * FROM media
+        WHERE media_id='${mediaId}'`
+    );
+
+    if (mediaResponse.rowCount === 0) {
+      return res.status(400).send(`media_is ${mediaId} does not exist`);
+    }
+
+    const response = await poolQuery(
+      `SELECT review,rating FROM user_review
+      WHERE media_id='${mediaId}'`
+    );
+
+    const allReviews = response.rows;
+
+    res.send(allReviews);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+};
 
 const deleteReview = (req, res) => {};
 

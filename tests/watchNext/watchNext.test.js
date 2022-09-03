@@ -3,7 +3,7 @@ const request = require("supertest");
 const app = require("../../src/app");
 const { poolQuery } = require("../../src/db");
 const runGlobalSetup = require("../globalSetup");
-const { insertDataToMediaTable } = require("../../src/helperFunctions/media");
+const { insertDataToTable } = require("../../src/helperFunctions/global");
 const {
   exampleUser1,
   exampleUser2,
@@ -24,10 +24,10 @@ const { addMediaToWatchNext, clearWatchNextTable } = require("./fixtures");
 //exampleUser1 adds exampleMedia1 and exampleMedia1a to their watchNext
 beforeEach(async () => {
   await runGlobalSetup();
-  await insertDataToMediaTable("poolQuery", poolQuery, imdbMedia1);
-  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1);
-  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1a);
-  await insertDataToMediaTable("poolQuery", poolQuery, exampleMedia1b);
+  await insertDataToTable("media", imdbMedia1);
+  await insertDataToTable("media", exampleMedia1);
+  await insertDataToTable("media", exampleMedia1a);
+  await insertDataToTable("media", exampleMedia1b);
   await addMediaToWatchNext(
     exampleUser1.user_account_id,
     exampleMedia1.media_id,

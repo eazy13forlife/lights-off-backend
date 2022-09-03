@@ -1,4 +1,5 @@
 const { poolQuery, getClient } = require("../../src/db");
+const { insertDataToTable } = require("../../src/helperFunctions/global");
 
 const exampleMedia1 = {
   media_id: "1",
@@ -43,10 +44,20 @@ const imdbMedia1 = {
   title: "Thor",
 };
 
+const imdbMedia2 = {
+  media_id: "imdb2",
+  media_source_id: 1,
+  media_type_id: 1,
+  title: "Spiderman",
+};
+
 const clearMediaTable = async () => {
   await poolQuery("DELETE FROM media");
 };
 
+const addMedia = async (mediaData) => {
+  const insertResponse = await insertDataToTable("media", mediaData);
+};
 module.exports = {
   clearMediaTable,
   exampleMedia1,
@@ -54,4 +65,5 @@ module.exports = {
   exampleMedia1b,
   exampleMedia2,
   imdbMedia1,
+  imdbMedia2,
 };

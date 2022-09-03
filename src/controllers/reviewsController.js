@@ -94,7 +94,26 @@ const getReviewsForMedia = async (req, res) => {
   }
 };
 
-const deleteReview = (req, res) => {};
+const deleteReview = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const deleteResponse = await poolQuery(
+      `DELETE FROM user_review
+      WHERE media_id='${mediaId}' AND user_account_id=${userId}`
+    );
+
+    if (deleteResponse.rowCount === 0) {
+      return res.status(400).send(noRecordMessage(userId, mediaId));
+    }
+
+    res.send();
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
 
 const getAllMyReviews = (req, res) => {};
 

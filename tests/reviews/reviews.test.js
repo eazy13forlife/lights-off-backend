@@ -165,3 +165,21 @@ test("Get a 404 error code when exampleUser2 tries to delete exampleMedia1 revie
     .send()
     .expect(404);
 });
+
+test("Get a 200 success code when exampleUser1 gets all their reviews", async () => {
+  await request(app)
+    .get(`/reviews`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get 3 items back when exampleUser1 gets all their reviews", async () => {
+  const response = await request(app)
+    .get(`/reviews`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.length).toBe(3);
+});

@@ -106,7 +106,7 @@ const deleteReview = async (req, res) => {
     );
 
     if (deleteResponse.rowCount === 0) {
-      return res.status(400).send(noRecordMessage(userId, mediaId));
+      return res.status(404).send(noRecordMessage(userId, mediaId));
     }
 
     res.send();

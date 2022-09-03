@@ -124,7 +124,7 @@ test("Get a 404 error code when exampleUser2 tries to update a review for exampl
     .expect(404);
 });
 
-test("Get a 200 success code when we get all reviews for imdbMedia2", async () => {
+test("Get a 200 success code when exampleUser1 gets all reviews for imdbMedia2", async () => {
   await request(app)
     .get(`/reviews/${imdbMedia2.media_id}`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -132,7 +132,7 @@ test("Get a 200 success code when we get all reviews for imdbMedia2", async () =
     .expect(200);
 });
 
-test("Get a 400 error code when we get all reviews for non-existent media", async () => {
+test("Get a 400 error code when exampleUser1 gets all reviews for non-existent media", async () => {
   await request(app)
     .get(`/reviews/545`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -140,7 +140,7 @@ test("Get a 400 error code when we get all reviews for non-existent media", asyn
     .expect(400);
 });
 
-test("Get 2 items back when we get all reviews for imdbMedia2", async () => {
+test("Get 2 items back when exampleUser1 gets all reviews for imdbMedia2", async () => {
   const response = await request(app)
     .get(`/reviews/${imdbMedia2.media_id}`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
@@ -148,4 +148,20 @@ test("Get 2 items back when we get all reviews for imdbMedia2", async () => {
     .expect(200);
 
   expect(response.body.length).toBe(2);
+});
+
+test("Get a 200 success code when exampleUser1 deletes exampleMedia1 review that they created", async () => {
+  await request(app)
+    .delete(`/reviews/1`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 error code when exampleUser2 tries to delete exampleMedia1 review that they didnt create.", async () => {
+  await request(app)
+    .delete(`/reviews/1`)
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
 });

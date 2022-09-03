@@ -78,7 +78,7 @@ const getReviewsForMedia = async (req, res) => {
     );
 
     if (mediaResponse.rowCount === 0) {
-      return res.status(400).send(`media_is ${mediaId} does not exist`);
+      return res.status(400).send(`media_id ${mediaId} does not exist`);
     }
 
     const response = await poolQuery(
@@ -115,7 +115,24 @@ const deleteReview = async (req, res) => {
   }
 };
 
-const getAllMyReviews = (req, res) => {};
+const getAllMyReviews = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const response = await poolQuery(
+      `SELECT * FROM user_review
+      INNER JOIN media
+      ON media.media_id=user_review.media_id
+      WHERE user_review.user_account_id=${userId}`
+    );
+
+    const allReviews = response.rows;
+
+    res.send(allReviews);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+};
 
 module.exports = {
   addReview,

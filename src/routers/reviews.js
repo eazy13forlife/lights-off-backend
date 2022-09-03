@@ -7,6 +7,7 @@ const {
   editReview,
   getReviewsForMedia,
   deleteReview,
+  getAllMyReviews,
 } = require("../controllers/reviewsController");
 
 //get all reviews for a specific media
@@ -22,6 +23,6 @@ router.patch("/reviews/:mediaId", authenticateMiddleware, editReview);
 router.delete("/reviews/:mediaId", authenticateMiddleware, deleteReview);
 
 //get all reviews for current logged in user
-router.get("/reviews/me");
+router.get("/reviews", authenticateMiddleware, getAllMyReviews);
 
 module.exports = router;

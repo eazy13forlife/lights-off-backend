@@ -31,4 +31,53 @@ const updateTableValues = async (table, updateData, conditions) => {
   return updateResponse;
 };
 
-module.exports = updateTableValues;
+const insertDataToTable = async (table, data) => {
+  const tableColumns = Object.keys(data);
+
+  const columnValues = Object.values(data);
+
+  const text = `
+  INSERT INTO ${table}(${getColumnsText(tableColumns)}) VALUES(${getValuesText(
+    tableColumns.length
+  )}) RETURNING *`;
+
+  return await poolQuery(text, columnValues);
+};
+
+// if (connectionType === "client") {
+//   return await connection.query(text, values);
+// } else if (connectionType === "poolQuery") {
+//   return await connection(text, values);
+// }
+
+const getColumnsText = (columns) => {
+  let text = "";
+
+  for (let i = 0; i < columns.length; i++) {
+    const column = columns[i];
+
+    text += column;
+
+    if (i !== columns.length - 1) {
+      text += ",";
+    }
+  }
+
+  return text;
+};
+
+const getValuesText = (numberOfValues) => {
+  let text = "";
+
+  for (let i = 0; i < numberOfValues; i++) {
+    text += `$${i + 1}`;
+
+    if (i !== numberOfValues - 1) {
+      text += ",";
+    }
+  }
+
+  return text;
+};
+
+module.exports = { insertDataToTable, updateTableValues };

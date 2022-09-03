@@ -1,6 +1,9 @@
 const { poolQuery } = require("../db");
 const { insertDataToMediaTable } = require("../helperFunctions/media");
-const updateTableValues = require("../helperFunctions/global");
+const {
+  updateTableValues,
+  insertDataToTable,
+} = require("../helperFunctions/global");
 
 const noRecordMessage = (userId, mediaId) => {
   return `media_id ${mediaId} is not found for user_account_id ${userId}.`;
@@ -11,13 +14,16 @@ const addMedia = async (req, res) => {
   try {
     const mediaData = req.body;
 
+    /*
     const response = await insertDataToMediaTable(
       "poolQuery",
       poolQuery,
       mediaData
     );
+*/
+    const insertResponse = await insertDataToTable("media", mediaData);
 
-    const insertedData = response.rows[0];
+    const insertedData = insertResponse.rows[0];
 
     res.status(201).send(insertedData);
   } catch (e) {

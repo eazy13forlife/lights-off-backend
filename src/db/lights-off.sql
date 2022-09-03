@@ -20,7 +20,7 @@ VALUES('imdb'),('user');
 
 /* create user_account table*/
 CREATE TABLE user_account(
-    user_account_ID SERIAL PRIMARY KEY UNIQUE,
+    user_account_id SERIAL PRIMARY KEY UNIQUE,
     email VARCHAR(255) UNIQUE NOT NULL,
     username TEXT UNIQUE NOT NULL CHECK(LENGTH(username)>=4),
     password TEXT NOT NULL CHECK(LENGTH(password)>=4)

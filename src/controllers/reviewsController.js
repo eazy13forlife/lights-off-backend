@@ -1,7 +1,10 @@
 const { poolQuery } = require("../db");
 
 const { preventUserAccessingMedia } = require("../helperFunctions/media");
-const updateTableValues = require("../helperFunctions/global");
+const {
+  updateTableValues,
+  insertDataToTable,
+} = require("../helperFunctions/global");
 
 const noRecordMessage = (userId, mediaId) => {
   return `A review for media_id ${mediaId} does not exist for user_account_id ${userId}`;
@@ -14,6 +17,13 @@ const addReview = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
+    //add the media_id and user_account_id to the current req.body
+    const updatedRequestBody = {
+      ...req.body,
+      user_account_id: userId,
+      media_id: mediaId,
+    };
+
     const shouldPreventAccess = await preventUserAccessingMedia(
       userId,
       mediaId
@@ -25,15 +35,14 @@ const addReview = async (req, res) => {
         .send(shouldPreventAccess.errorMessage);
     }
 
-    const { review, rating } = req.body;
-
-    const insertResponse = await poolQuery(
-      `INSERT INTO user_review(user_account_id,media_id,review,rating) VALUES($1,$2,$3,$4) RETURNING *`,
-      [userId, mediaId, review, rating]
+    const insertResponse = await insertDataToTable(
+      "user_review",
+      updatedRequestBody
     );
 
     res.status(201).send(insertResponse.rows[0]);
   } catch (e) {
+    console.log(e.message);
     res.status(400).send(e.message);
   }
 };

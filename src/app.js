@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 const usersRouter = require("./routers/users");
 const mediaRouter = require("./routers/media");
@@ -10,6 +11,15 @@ const watchNextRouter = require("./routers/watchNext");
 const errorHandler = require("./routers/errorHandler");
 
 const app = express();
+
+app.use(
+  cors({
+    allowedHeaders: ["Content-Type", "authorization", "Accept"],
+    origin: "http://localhost:3000",
+    preflightContinue: true,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  })
+);
 
 app.use(express.json());
 

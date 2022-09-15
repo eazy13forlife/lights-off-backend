@@ -15,7 +15,7 @@ const app = express();
 app.use(
   cors({
     allowedHeaders: ["Content-Type", "authorization", "Accept"],
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3001",
     preflightContinue: true,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   })

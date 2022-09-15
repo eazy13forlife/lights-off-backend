@@ -1,5 +1,6 @@
 const UserData = require("../helperFunctions/users/UserData");
 const { poolQuery } = require("../db");
+const usersErrors = require("../controllersErrors/users");
 const {
   checkPassword,
   sendUserAuthToken,
@@ -32,13 +33,18 @@ const createAccount = async (req, res) => {
     //the most recent row is the user that was added
     const insertedUser = response.rows[response.rows.length - 1];
 
+    //remove password before sending over to client
+    delete insertedUser.password;
+
     //send the user an authToken
     const authToken = await sendUserAuthToken(insertedUser.user_account_id);
 
     //respond with the added user and their authToken
     res.status(201).send({ insertedUser, authToken });
   } catch (e) {
-    res.status(500).send(e.message);
+    const { status, message } = usersErrors(e);
+
+    res.status(status).send(message);
   }
 };
 

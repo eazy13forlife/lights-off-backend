@@ -86,6 +86,9 @@ const loginToAccount = async (req, res) => {
 
     const authToken = await sendUserAuthToken(user.user_account_id);
 
+    //remove password before sending over to the user
+    delete user.password;
+
     res.send({ user, authToken });
   } catch (e) {
     console.log(e);

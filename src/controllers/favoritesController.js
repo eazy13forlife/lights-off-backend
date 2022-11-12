@@ -6,7 +6,7 @@ const getAllFavorites = async (req, res) => {
     const userId = req.user.user_account_id;
 
     //get current page asked for
-    const page = req.params.page;
+    const page = req.query.page;
 
     if (page <= 0) {
       return res.status(400).send("Page number must not be negative");

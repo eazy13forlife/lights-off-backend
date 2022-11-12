@@ -8,8 +8,8 @@ const {
   deleteFromFavorites,
 } = require("../controllers/favoritesController");
 
-//get all favorites of signed in user
-router.get("/favorites/:page", authenticateMiddleware, getAllFavorites);
+//get all favorites of signed in user. Takes in page query param
+router.get("/favorites/", authenticateMiddleware, getAllFavorites);
 
 //add media to favorites
 router.post("/favorites/:mediaId", authenticateMiddleware, addToFavorites);

@@ -106,7 +106,7 @@ test("Get a 404 code when exampleUser2 tries to delete non-existent media from t
 
 test("Get a 200 code when exampleUser1 tries to get all their favorites", async () => {
   await request(app)
-    .get(`/favorites`)
+    .get(`/favorites/?page=1`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
     .send()
     .expect(200);
@@ -114,9 +114,10 @@ test("Get a 200 code when exampleUser1 tries to get all their favorites", async 
 
 test("Get back 2 results when exampleUser1 tries to get all their favorites", async () => {
   const response = await request(app)
-    .get(`/favorites`)
+    .get(`/favorites/?page=1`)
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
     .send()
     .expect(200);
-  expect(response.body.length).toBe(2);
+
+  expect(response.body.results.length).toBe(2);
 });

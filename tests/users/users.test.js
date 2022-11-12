@@ -29,7 +29,7 @@ test("Sign up a valid new user", async () => {
     })
     .expect(201);
 
-  const insertedUser = response._body.insertedUser;
+  const insertedUser = response._body.user;
 
   //expect user to exist in our database
   expect(insertedUser).toBeTruthy();

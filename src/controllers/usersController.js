@@ -9,19 +9,19 @@ const {
 //need email, username and password fields
 const createAccount = async (req, res) => {
   try {
-    const user = new UserData(req.body, {
+    const userData = new UserData(req.body, {
       email: true,
       password: true,
       username: true,
     });
 
-    const dataErrors = user.checkIfDataErrors();
+    const dataErrors = userData.checkIfDataErrors();
 
     if (dataErrors) {
       return res.status(dataErrors.statusCode).send(dataErrors.errorMessage);
     }
 
-    const hashedPassword = await user.hashPassword();
+    const hashedPassword = await userData.hashPassword();
 
     const response = await poolQuery(
       `INSERT INTO user_account(email,username,password) 
@@ -31,17 +31,18 @@ const createAccount = async (req, res) => {
     );
 
     //the most recent row is the user that was added
-    const insertedUser = response.rows[response.rows.length - 1];
+    const user = response.rows[response.rows.length - 1];
 
     //remove password before sending over to client
-    delete insertedUser.password;
+    delete user.password;
 
     //send the user an authToken
-    const authToken = await sendUserAuthToken(insertedUser.user_account_id);
+    const authToken = await sendUserAuthToken(user.user_account_id);
 
     //respond with the added user and their authToken
-    res.status(201).send({ insertedUser, authToken });
+    res.status(201).send({ user, authToken });
   } catch (e) {
+    console.log(e);
     const { status, message } = usersErrors(e);
 
     res.status(status).send(message);

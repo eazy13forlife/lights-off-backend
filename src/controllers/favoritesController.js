@@ -5,16 +5,47 @@ const getAllFavorites = async (req, res) => {
   try {
     const userId = req.user.user_account_id;
 
+    //get current page asked for
+    const page = req.params.page;
+
+    if (page <= 0) {
+      return res.status(400).send("Page number must not be negative");
+    }
+
+    //get the total number of favorites for user
+    const countResponse = await poolQuery(
+      `SELECT COUNT(user_account_id) FROM user_favorite
+      WHERE user_account_id=${userId}`
+    );
+
+    const numberOfFavorites = countResponse.rows[0].count;
+
+    //number of results we want to return back to user per page
+    const resultsPerPage = 20;
+
+    //get total number of pages of data, accounting for resultsPerPage
+    const totalPages = Math.ceil(numberOfFavorites / resultsPerPage);
+
+    //the amount of data we skip per page, before getting the amount of results per page
+    const offsetAmount = (page - 1) * 20;
+
     const getAllResponse = await poolQuery(
       `SELECT * FROM user_favorite
       INNER JOIN media
       ON user_favorite.media_id=media.media_id
-      WHERE user_favorite.user_account_id=${userId}`
+      WHERE user_favorite.user_account_id=${userId}
+      ORDER BY media.media_id
+      LIMIT ${resultsPerPage} OFFSET ${offsetAmount}`
     );
 
     const allFavorites = getAllResponse.rows;
 
-    res.send(allFavorites);
+    res.send({
+      total_pages: totalPages,
+      total_results: numberOfFavorites,
+      page: page,
+      results: allFavorites,
+    });
   } catch (e) {
     res.status(400).send();
   }

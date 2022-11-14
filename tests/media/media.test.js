@@ -193,3 +193,19 @@ test("Get 0 results when exampleUser2 tries to retrieve all their uploads", asyn
 
   expect(response.body.length).toBe(0);
 });
+
+test("Get a 200 response when exampleUser1 checks to see if imdbMedia1 is in the database", async () => {
+  const response = await request(app)
+    .head(`/media/exists/${imdbMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 response when exampleUser checks to see if imdbMedia1 is in the database", async () => {
+  const response = await request(app)
+    .head(`/media/exists/${imdbMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});

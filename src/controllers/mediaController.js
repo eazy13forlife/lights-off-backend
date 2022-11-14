@@ -14,13 +14,6 @@ const addMedia = async (req, res) => {
   try {
     const mediaData = req.body;
 
-    /*
-    const response = await insertDataToMediaTable(
-      "poolQuery",
-      poolQuery,
-      mediaData
-    );
-*/
     const insertResponse = await insertDataToTable("media", mediaData);
 
     const insertedData = insertResponse.rows[0];
@@ -28,6 +21,37 @@ const addMedia = async (req, res) => {
     res.status(201).send(insertedData);
   } catch (e) {
     res.status(400).send(e.message);
+  }
+};
+
+const checkMediaInDatabase = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const checkResponse = await poolQuery(
+      `SELECT * FROM media
+      WHERE media_id='${mediaId}' `
+    );
+
+    //if item isnt found, return 404
+    if (checkResponse.rowCount === 0) {
+      return res.status(404).send();
+    }
+
+    //get the user_account_id of found item if it even exists
+    const mediaUserAccountId = checkResponse.rows[0].user_account_id;
+
+    //if we find media and its user upload(check to see if correct user has uploaded it)
+    if (mediaUserAccountId && mediaUserAccountId !== userId) {
+      return res.status(404).send();
+    }
+
+    //if user_account_id doesn't exist, its imdb so we're good. or if id's match then we're good.
+    return res.send();
+  } catch (e) {
+    res.status(400).send();
   }
 };
 
@@ -46,6 +70,7 @@ const getMedia = async (req, res) => {
     if (response.rowCount === 0) {
       return res.status(404).send(noRecordMessage(userId, mediaId));
     }
+
     res.send(response.rows);
   } catch (e) {
     res.status(400).send(e.message);
@@ -104,4 +129,5 @@ module.exports = {
   getMedia,
   deleteMedia,
   updateMedia,
+  checkMediaInDatabase,
 };

@@ -5,8 +5,8 @@ const getAllFavorites = async (req, res) => {
   try {
     const userId = req.user.user_account_id;
 
-    //get current page asked for
-    const page = req.query.page;
+    //get current page asked for from query.Convert to number
+    const page = +req.query.page;
 
     if (page <= 0) {
       return res.status(400).send("Page number must not be negative");
@@ -18,7 +18,7 @@ const getAllFavorites = async (req, res) => {
       WHERE user_account_id=${userId}`
     );
 
-    const numberOfFavorites = countResponse.rows[0].count;
+    const numberOfFavorites = +countResponse.rows[0].count;
 
     //number of results we want to return back to user per page
     const resultsPerPage = 20;

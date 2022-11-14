@@ -7,11 +7,17 @@ const {
   getMedia,
   deleteMedia,
   updateMedia,
+  checkMediaInDatabase,
 } = require("../controllers/mediaController");
 
 //upload media
 router.post("/media", authenticateMiddleware, addMedia);
 
+router.head(
+  "/media/exists/:mediaId",
+  authenticateMiddleware,
+  checkMediaInDatabase
+);
 //get a specific media by id
 router.get("/media/:mediaId", authenticateMiddleware, getMedia);
 

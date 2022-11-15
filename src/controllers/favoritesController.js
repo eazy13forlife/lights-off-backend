@@ -1,5 +1,6 @@
 const { preventUserAccessingMedia } = require("../helperFunctions/media");
 const { poolQuery } = require("../db");
+const { checkMediaExists } = require("../helperFunctions/global.js");
 
 const getAllFavorites = async (req, res) => {
   try {
@@ -46,6 +47,20 @@ const getAllFavorites = async (req, res) => {
       page: page,
       results: allFavorites,
     });
+  } catch (e) {
+    res.status(400).send();
+  }
+};
+
+const checkMediaInFavorites = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const response = await checkMediaExists("user_favorite", mediaId, userId);
+
+    return res.status(response.statusCode).send();
   } catch (e) {
     res.status(400).send();
   }
@@ -108,4 +123,5 @@ module.exports = {
   getAllFavorites,
   addToFavorites,
   deleteFromFavorites,
+  checkMediaInFavorites,
 };

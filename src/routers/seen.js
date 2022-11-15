@@ -6,7 +6,11 @@ const {
   addToSeen,
   deleteFromSeen,
   getAllSeen,
+  checkMediaInSeen,
 } = require("../controllers/seenController");
+
+//check if a specific media is already in our user_seen table
+router.head("/seen/exists/:mediaId", authenticateMiddleware, checkMediaInSeen);
 
 //get all seen media by user
 router.get("/seen", authenticateMiddleware, getAllSeen);

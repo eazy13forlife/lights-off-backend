@@ -1,6 +1,8 @@
-const { preventUserAccessingMedia } = require("../helperFunctions/media");
 const { poolQuery } = require("../db");
-const { checkMediaExists } = require("../helperFunctions/global.js");
+const {
+  preventUserAccessingMedia,
+  checkMediaExistsInTable,
+} = require("../helperFunctions/media");
 
 const getAllFavorites = async (req, res) => {
   try {
@@ -58,7 +60,11 @@ const checkMediaInFavorites = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const response = await checkMediaExists("user_favorite", mediaId, userId);
+    const response = await checkMediaExistsInTable(
+      "user_favorite",
+      mediaId,
+      userId
+    );
 
     return res.status(response.statusCode).send();
   } catch (e) {

@@ -1,6 +1,7 @@
 const { poolQuery } = require("../db");
 const {
   preventUserAccessingMedia,
+  checkMediaExistsInTable,
 } = require("../../src/helperFunctions/media/index.js");
 
 //user can add any imdb movie and any movie theyve uploaded to seen
@@ -30,6 +31,24 @@ const addToSeen = async (req, res) => {
     res.send();
   } catch (e) {
     res.status(400).send(e.message);
+  }
+};
+
+const checkMediaInSeen = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const response = await checkMediaExistsInTable(
+      "user_seen",
+      mediaId,
+      userId
+    );
+
+    return res.status(response.statusCode).send();
+  } catch (e) {
+    res.status(400).send();
   }
 };
 
@@ -87,4 +106,5 @@ module.exports = {
   addToSeen,
   deleteFromSeen,
   getAllSeen,
+  checkMediaInSeen,
 };

@@ -123,3 +123,19 @@ test("Get 2 media items back when exampleUser1 tries to get all media from their
 
   expect(response.body.length).toBe(2);
 });
+
+test("Get a 200 status code when exampleUser1 tries to check if exampleMedia1 they added to their watch next is in there.", async () => {
+  await request(app)
+    .head(`/watch-next/exists/${exampleMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 status code when exampleUser1 tries to check if exampleMedia1b they didn't add to their watch next is in there.", async () => {
+  await request(app)
+    .head(`/watch-next/exists/${exampleMedia1b.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(404);
+});

@@ -6,7 +6,14 @@ const {
   addToWatchNext,
   deleteFromWatchNext,
   getAllWatchNext,
+  checkMediaInWatchNext,
 } = require("../controllers/watchNextController");
+
+router.head(
+  "/watch-next/exists/:mediaId",
+  authenticateMiddleware,
+  checkMediaInWatchNext
+);
 
 //get all watch next media
 router.get("/watch-next", authenticateMiddleware, getAllWatchNext);

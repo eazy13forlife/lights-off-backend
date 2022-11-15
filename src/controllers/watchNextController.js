@@ -1,5 +1,8 @@
 const { poolQuery } = require("../db");
-const { preventUserAccessingMedia } = require("../helperFunctions/media/index");
+const {
+  preventUserAccessingMedia,
+  checkMediaExistsInTable,
+} = require("../helperFunctions/media/index");
 
 const addToWatchNext = async (req, res) => {
   try {
@@ -39,6 +42,24 @@ const addToWatchNext = async (req, res) => {
     res.send();
   } catch (e) {
     res.status(400).send(e.message);
+  }
+};
+
+const checkMediaInWatchNext = async (req, res) => {
+  try {
+    const mediaId = req.params.mediaId;
+
+    const userId = req.user.user_account_id;
+
+    const response = await checkMediaExistsInTable(
+      "user_watch_next",
+      mediaId,
+      userId
+    );
+
+    return res.status(response.statusCode).send();
+  } catch (e) {
+    res.status(400).send();
   }
 };
 
@@ -86,4 +107,9 @@ const getAllWatchNext = async (req, res) => {
   }
 };
 
-module.exports = { addToWatchNext, deleteFromWatchNext, getAllWatchNext };
+module.exports = {
+  addToWatchNext,
+  deleteFromWatchNext,
+  getAllWatchNext,
+  checkMediaInWatchNext,
+};

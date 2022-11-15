@@ -121,3 +121,19 @@ test("Get back 2 results when exampleUser1 tries to get all their favorites", as
 
   expect(response.body.results.length).toBe(2);
 });
+
+test("Get a 200 code when exampleUser1 tries to check if the exampleMedia1 they added in favorites is already there", async () => {
+  await request(app)
+    .head(`/favorites/exists/${exampleMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 code when exampleUser1 tries to check if imdbMedia1 they didnt add to favorites is in there there", async () => {
+  await request(app)
+    .head(`/favorites/exists/${imdbMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(404);
+});

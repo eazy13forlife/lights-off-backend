@@ -114,3 +114,19 @@ test("Get a count of 2 when exampleUser1 makes a get request to /seen to get bot
 
   expect(response.body.length).toBe(2);
 });
+
+test("Get a 200 status code when exampleUser1 checks to see if the exampleMedia1 they added to seen is in there", async () => {
+  await request(app)
+    .head(`/seen/exists/${exampleMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 status code when exampleUser1 checks to see if the exampleMedia1b they didn't add to seen is in there", async () => {
+  await request(app)
+    .head(`/seen/exists/${exampleMedia1b.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(404);
+});

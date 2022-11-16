@@ -3,6 +3,7 @@ const {
   preventUserAccessingMedia,
   checkMediaExistsInTable,
 } = require("../helperFunctions/media");
+const { getPaginatedItems } = require("../helperFunctions/global.js");
 
 const getAllFavorites = async (req, res) => {
   try {
@@ -11,44 +12,13 @@ const getAllFavorites = async (req, res) => {
     //get current page asked for from query.Convert to number
     const page = +req.query.page;
 
-    if (page <= 0) {
-      return res.status(400).send("Page number must not be negative");
-    }
-
-    //get the total number of favorites for user
-    const countResponse = await poolQuery(
-      `SELECT COUNT(user_account_id) FROM user_favorite
-      WHERE user_account_id=${userId}`
+    const { status, message } = await getPaginatedItems(
+      page,
+      userId,
+      "user_favorite"
     );
 
-    const numberOfFavorites = +countResponse.rows[0].count;
-
-    //number of results we want to return back to user per page
-    const resultsPerPage = 20;
-
-    //get total number of pages of data, accounting for resultsPerPage
-    const totalPages = Math.ceil(numberOfFavorites / resultsPerPage);
-
-    //the amount of data we skip per page, before getting the amount of results per page
-    const offsetAmount = (page - 1) * 20;
-
-    const getAllResponse = await poolQuery(
-      `SELECT * FROM user_favorite
-      INNER JOIN media
-      ON user_favorite.media_id=media.media_id
-      WHERE user_favorite.user_account_id=${userId}
-      ORDER BY media.media_id
-      LIMIT ${resultsPerPage} OFFSET ${offsetAmount}`
-    );
-
-    const allFavorites = getAllResponse.rows;
-
-    res.send({
-      total_pages: totalPages,
-      total_results: numberOfFavorites,
-      page: page,
-      results: allFavorites,
-    });
+    return res.status(status).send(message);
   } catch (e) {
     res.status(400).send();
   }

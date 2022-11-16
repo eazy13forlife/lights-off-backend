@@ -97,9 +97,9 @@ test("Get a 404 error status code when exampleUser2 tries to delete non-existent
     .expect(404);
 });
 
-test("Get a 200 status code when exampleUser1 makes a get request to /seen to get all their seen movies", async () => {
+test("Get a 200 status code when exampleUser1 makes a get request to /seen/?page=1 to get all their seen movies", async () => {
   await request(app)
-    .get("/seen")
+    .get("/seen/?page=1")
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
     .send()
     .expect(200);
@@ -107,12 +107,12 @@ test("Get a 200 status code when exampleUser1 makes a get request to /seen to ge
 
 test("Get a count of 2 when exampleUser1 makes a get request to /seen to get both their seen movies", async () => {
   const response = await request(app)
-    .get("/seen")
+    .get("/seen/?page=1")
     .set("Authorization", `Bearer ${exampleUser1.authToken}`)
     .send()
     .expect(200);
 
-  expect(response.body.length).toBe(2);
+  expect(response.body.results.length).toBe(2);
 });
 
 test("Get a 200 status code when exampleUser1 checks to see if the exampleMedia1 they added to seen is in there", async () => {

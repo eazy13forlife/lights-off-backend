@@ -3,6 +3,7 @@ const {
   preventUserAccessingMedia,
   checkMediaExistsInTable,
 } = require("../helperFunctions/media/index");
+const { getPaginatedItems } = require("../helperFunctions/global.js");
 
 const addToWatchNext = async (req, res) => {
   try {
@@ -92,16 +93,16 @@ const getAllWatchNext = async (req, res) => {
   try {
     const userId = req.user.user_account_id;
 
-    const response = await poolQuery(
-      `SELECT * FROM user_watch_next
-      INNER JOIN media
-      ON user_watch_next.media_id=media.media_id
-      WHERE user_watch_next.user_account_id=${userId}`
+    //get current page asked for from query.Then, convert to number
+    const page = +req.query.page;
+
+    const { status, message } = await getPaginatedItems(
+      page,
+      userId,
+      "user_watch_next"
     );
 
-    const allWatchNext = response.rows;
-
-    res.send(allWatchNext);
+    return res.status(status).send(message);
   } catch (e) {
     res.status(400).send();
   }

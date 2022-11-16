@@ -3,6 +3,7 @@ const {
   preventUserAccessingMedia,
   checkMediaExistsInTable,
 } = require("../../src/helperFunctions/media/index.js");
+const { getPaginatedItems } = require("../helperFunctions/global.js");
 
 //user can add any imdb movie and any movie theyve uploaded to seen
 const addToSeen = async (req, res) => {
@@ -87,18 +88,18 @@ const getAllSeen = async (req, res) => {
   try {
     const userId = req.user.user_account_id;
 
-    const seenResponse = await poolQuery(
-      `SELECT * FROM user_seen
-      INNER JOIN media
-      ON user_seen.media_id=media.media_id
-      WHERE user_seen.user_account_id=${userId}`
+    //get current page asked for from query.Convert to number
+    const page = +req.query.page;
+
+    const { status, message } = await getPaginatedItems(
+      page,
+      userId,
+      "user_seen"
     );
 
-    const allSeen = seenResponse.rows;
-
-    res.send(allSeen);
+    return res.status(status).send(message);
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send();
   }
 };
 

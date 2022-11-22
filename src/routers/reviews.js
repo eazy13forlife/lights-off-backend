@@ -8,8 +8,15 @@ const {
   getReviewsForMedia,
   deleteReview,
   getAllMyReviews,
+  checkIfUserReviewedMedia,
 } = require("../controllers/reviewsController");
 
+//check if user reviewed media
+router.head(
+  "/reviews/:mediaId",
+  authenticateMiddleware,
+  checkIfUserReviewedMedia
+);
 //get all reviews for a specific media
 router.get("/reviews/:mediaId", authenticateMiddleware, getReviewsForMedia);
 

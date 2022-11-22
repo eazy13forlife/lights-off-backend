@@ -6,6 +6,7 @@ const preventUserAccessingMedia = async (userId, mediaId) => {
     WHERE media_id='${mediaId}'`
   );
 
+  console.log(mediaResponse);
   //the media is not found at all in mediaTable
   if (mediaResponse.rowCount === 0) {
     return {
@@ -31,7 +32,7 @@ const preventUserAccessingMedia = async (userId, mediaId) => {
 const checkMediaExistsInTable = async (table, mediaId, userId) => {
   const response = await poolQuery(`
   SELECT * from ${table}
-  WHERE ${table}.media_id='${mediaId}'`);
+  WHERE ${table}.media_id='${mediaId}' AND ${table}.user_account_id=${userId}`);
 
   //if nothing in table then not found, so return 404
   if (response.rowCount === 0) {
@@ -39,15 +40,7 @@ const checkMediaExistsInTable = async (table, mediaId, userId) => {
       statusCode: 404,
     };
   }
-
-  //get the userId for item in table and if it doesnt match user, then not found. Otherwise, found
-  const userAccountId = response.rows[0].user_account_id;
-
-  if (userAccountId !== userId) {
-    return {
-      statusCode: 404,
-    };
-  }
+  //Otherwise, found
   return {
     statusCode: 200,
   };

@@ -1,6 +1,9 @@
 const { poolQuery } = require("../db");
 
-const { preventUserAccessingMedia } = require("../helperFunctions/media");
+const {
+  preventUserAccessingMedia,
+  checkMediaExistsInTable,
+} = require("../helperFunctions/media");
 const {
   updateTableValues,
   insertDataToTable,
@@ -72,6 +75,7 @@ const getReviewsForMedia = async (req, res) => {
   try {
     const mediaId = req.params.mediaId;
 
+    //check to make sure the media exists
     const mediaResponse = await poolQuery(
       `SELECT * FROM media
         WHERE media_id='${mediaId}'`
@@ -82,7 +86,9 @@ const getReviewsForMedia = async (req, res) => {
     }
 
     const response = await poolQuery(
-      `SELECT review,rating FROM user_review
+      `SELECT user_review.media_id,user_review.review,user_review.rating,user_account.username FROM user_review
+      INNER JOIN user_account
+      ON user_review.user_account_id=user_account.user_account_id
       WHERE media_id='${mediaId}'`
     );
 
@@ -115,6 +121,24 @@ const deleteReview = async (req, res) => {
   }
 };
 
+const checkIfUserReviewedMedia = async () => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const mediaId = req.params.mediaId;
+
+    const response = await checkMediaExistsInTable(
+      "user_review",
+      mediaId,
+      userId
+    );
+
+    return res.status(response.statusCode).send();
+  } catch (e) {
+    res.status(400).send();
+  }
+};
+
 const getAllMyReviews = async (req, res) => {
   try {
     const userId = req.user.user_account_id;
@@ -140,4 +164,5 @@ module.exports = {
   getReviewsForMedia,
   deleteReview,
   getAllMyReviews,
+  checkIfUserReviewedMedia,
 };

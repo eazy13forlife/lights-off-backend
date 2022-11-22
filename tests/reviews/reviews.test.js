@@ -183,3 +183,19 @@ test("Get 3 items back when exampleUser1 gets all their reviews", async () => {
 
   expect(response.body.length).toBe(3);
 });
+
+test("Get a 200 success code when exampleUser1 checks to see if they reviewed exampleMedia1, which they did", async () => {
+  await request(app)
+    .head(`/reviews/${exampleMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("Get a 404 not found when exampleUser2 checks to see if they reviewed exampleMedia1, which they didnt", async () => {
+  await request(app)
+    .head(`/reviews/${exampleMedia1.media_id}`)
+    .set("Authorization", `Bearer ${exampleUser2.authToken}`)
+    .send()
+    .expect(404);
+});

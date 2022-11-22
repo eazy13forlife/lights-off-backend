@@ -1,7 +1,7 @@
 const { poolQuery } = require("../db");
 const {
   preventUserAccessingMedia,
-  checkMediaExistsInTable,
+  checkMediaExistsInTableForUser,
 } = require("../helperFunctions/media");
 const { getPaginatedItems } = require("../helperFunctions/global.js");
 
@@ -30,7 +30,7 @@ const checkMediaInFavorites = async (req, res) => {
 
     const userId = req.user.user_account_id;
 
-    const response = await checkMediaExistsInTable(
+    const response = await checkMediaExistsInTableForUser(
       "user_favorite",
       mediaId,
       userId

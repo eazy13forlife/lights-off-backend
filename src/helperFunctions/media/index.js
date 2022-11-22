@@ -6,7 +6,6 @@ const preventUserAccessingMedia = async (userId, mediaId) => {
     WHERE media_id='${mediaId}'`
   );
 
-  console.log(mediaResponse);
   //the media is not found at all in mediaTable
   if (mediaResponse.rowCount === 0) {
     return {
@@ -29,7 +28,7 @@ const preventUserAccessingMedia = async (userId, mediaId) => {
   return false;
 };
 
-const checkMediaExistsInTable = async (table, mediaId, userId) => {
+const checkMediaExistsInTableForUser = async (table, mediaId, userId) => {
   const response = await poolQuery(`
   SELECT * from ${table}
   WHERE ${table}.media_id='${mediaId}' AND ${table}.user_account_id=${userId}`);
@@ -48,5 +47,5 @@ const checkMediaExistsInTable = async (table, mediaId, userId) => {
 
 module.exports = {
   preventUserAccessingMedia,
-  checkMediaExistsInTable,
+  checkMediaExistsInTableForUser,
 };

@@ -2,7 +2,7 @@ const { poolQuery } = require("../db");
 
 const {
   preventUserAccessingMedia,
-  checkMediaExistsInTable,
+  checkMediaExistsInTableForUser,
 } = require("../helperFunctions/media");
 const {
   updateTableValues,
@@ -121,13 +121,13 @@ const deleteReview = async (req, res) => {
   }
 };
 
-const checkIfUserReviewedMedia = async () => {
+const checkIfUserReviewedMedia = async (req, res) => {
   try {
     const userId = req.user.user_account_id;
 
     const mediaId = req.params.mediaId;
 
-    const response = await checkMediaExistsInTable(
+    const response = await checkMediaExistsInTableForUser(
       "user_review",
       mediaId,
       userId

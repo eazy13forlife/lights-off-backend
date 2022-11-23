@@ -6,6 +6,7 @@ const {
   createAccount,
   loginToAccount,
   getAccountInfo,
+  logoutAccount,
 } = require("../controllers/usersController");
 
 //create account (public)
@@ -13,6 +14,9 @@ router.post("/users/signup", createAccount);
 
 //login to account(public)
 router.post("/users/login", loginToAccount);
+
+//login to account(public)
+router.post("/users/logout", authenticateMiddleware, logoutAccount);
 
 //get my account info
 router.get("/users/me", authenticateMiddleware, getAccountInfo);

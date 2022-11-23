@@ -105,6 +105,26 @@ const getAccountInfo = (req, res) => {
   }
 };
 
+const logoutAccount = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const authToken = req.authToken;
+
+    const response = await poolQuery(`
+    DELETE FROM user_auth_token
+    WHERE user_account_id=${userId} AND auth_token='${authToken}' `);
+
+    if (response.rowCount === 0) {
+      return res.status(404).send();
+    }
+
+    res.send();
+  } catch (e) {
+    res.status(500).send();
+  }
+};
+
 const editAccountInfo = (req, res) => {};
 
 const uploadProfilePic = (req, res) => {};
@@ -118,4 +138,5 @@ module.exports = {
   editAccountInfo,
   uploadProfilePic,
   editProfilePic,
+  logoutAccount,
 };

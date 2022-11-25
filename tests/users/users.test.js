@@ -146,3 +146,27 @@ test("The authentication middleware should fail when exampleUser2 does not curre
     .send()
     .expect(401);
 });
+
+test("ExampleUser1 logging out successfully should return a 200 status code ", async () => {
+  //user's token cannot be verified
+  await request(app)
+    .post("/users/logout")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+});
+
+test("After exampleUser1 logs out,retrieving a private route should result in a 401 unauthorized because their authToken does not exist anymore.", async () => {
+  //user's token cannot be verified
+  await request(app)
+    .post("/users/logout")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  await request(app)
+    .get("/users/me")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(401);
+});

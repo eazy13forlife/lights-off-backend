@@ -3,7 +3,10 @@ const {
   preventUserAccessingMedia,
   checkMediaExistsInTableForUser,
 } = require("../helperFunctions/media");
-const { getPaginatedItems } = require("../helperFunctions/global.js");
+const {
+  getPaginatedItems,
+  getPaginatedSearchItems,
+} = require("../helperFunctions/global.js");
 
 const getAllFavorites = async (req, res) => {
   try {
@@ -95,9 +98,31 @@ const deleteFromFavorites = async (req, res) => {
   }
 };
 
+const searchInFavorites = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const mediaTitle = req.query.title;
+
+    const page = +req.query.page;
+
+    const { status, message } = await getPaginatedSearchItems(
+      mediaTitle,
+      page,
+      userId,
+      "user_favorite"
+    );
+
+    res.status(status).send(message);
+  } catch (e) {
+    res.status(400).send();
+  }
+};
+
 module.exports = {
   getAllFavorites,
   addToFavorites,
   deleteFromFavorites,
   checkMediaInFavorites,
+  searchInFavorites,
 };

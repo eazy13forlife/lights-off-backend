@@ -7,10 +7,14 @@ const {
   deleteFromSeen,
   getAllSeen,
   checkMediaInSeen,
+  searchInSeen,
 } = require("../controllers/seenController");
 
 //check if a specific media is already in our user_seen table
 router.head("/seen/exists/:mediaId", authenticateMiddleware, checkMediaInSeen);
+
+//search for a media in user's seen list
+router.get("/seen/search", authenticateMiddleware, searchInSeen);
 
 //get all seen media by user
 router.get("/seen", authenticateMiddleware, getAllSeen);

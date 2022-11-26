@@ -103,9 +103,31 @@ const getAllSeen = async (req, res) => {
   }
 };
 
+const searchInSeen = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const mediaTitle = req.query.title;
+
+    const page = +req.query.page;
+
+    const { status, message } = await getPaginatedSearchItems(
+      mediaTitle,
+      page,
+      userId,
+      "user_seen"
+    );
+
+    res.status(status).send(message);
+  } catch (e) {
+    res.status(400).send();
+  }
+};
+
 module.exports = {
   addToSeen,
   deleteFromSeen,
   getAllSeen,
   checkMediaInSeen,
+  searchInSeen,
 };

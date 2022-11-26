@@ -130,3 +130,23 @@ test("Get a 404 status code when exampleUser1 checks to see if the exampleMedia1
     .send()
     .expect(404);
 });
+
+test("Get 2 results when exampleUser1 searches for all media in seen that has the word 'love' in it.", async () => {
+  const response = await request(app)
+    .get("/seen/search/?title=love&page=1")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.total_results).toBe(2);
+});
+
+test("Get 1 result when exampleUser1 searches for all media in seen that has the word 'penguin' in it.", async () => {
+  const response = await request(app)
+    .get("/seen/search/?title=penguin&page=1")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.total_results).toBe(1);
+});

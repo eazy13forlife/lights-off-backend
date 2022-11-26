@@ -3,7 +3,10 @@ const {
   preventUserAccessingMedia,
   checkMediaExistsInTableForUser,
 } = require("../../src/helperFunctions/media/index.js");
-const { getPaginatedItems } = require("../helperFunctions/global.js");
+const {
+  getPaginatedItems,
+  getPaginatedSearchItems,
+} = require("../helperFunctions/global.js");
 
 //user can add any imdb movie and any movie theyve uploaded to seen
 const addToSeen = async (req, res) => {

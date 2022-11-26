@@ -6,7 +6,7 @@ const exampleMedia1 = {
   media_source_id: 2,
   user_account_id: 1,
   media_type_id: 1,
-  title: "Penguins",
+  title: "Penguins love",
   date_uploaded: "2022-08-13",
 };
 

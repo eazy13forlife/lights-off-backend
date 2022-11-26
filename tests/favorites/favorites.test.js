@@ -137,3 +137,23 @@ test("Get a 404 code when exampleUser1 tries to check if imdbMedia1 they didnt a
     .send()
     .expect(404);
 });
+
+test("Get 2 results when exampleUser1 searches for all media in favorites that has the word 'love' in it.", async () => {
+  const response = await request(app)
+    .get("/favorites/search/?title=love&page=1")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.total_results).toBe(2);
+});
+
+test("Get 1 result1 when exampleUser1 searches for all media in favorites that has the word 'penguin' in it.", async () => {
+  const response = await request(app)
+    .get("/favorites/search/?title=penguin&page=1")
+    .set("Authorization", `Bearer ${exampleUser1.authToken}`)
+    .send()
+    .expect(200);
+
+  expect(response.body.total_results).toBe(1);
+});

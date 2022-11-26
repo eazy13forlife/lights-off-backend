@@ -3,7 +3,10 @@ const {
   preventUserAccessingMedia,
   checkMediaExistsInTableForUser,
 } = require("../helperFunctions/media/index");
-const { getPaginatedItems } = require("../helperFunctions/global.js");
+const {
+  getPaginatedItems,
+  getPaginatedSearchItems,
+} = require("../helperFunctions/global.js");
 
 const addToWatchNext = async (req, res) => {
   try {
@@ -108,9 +111,31 @@ const getAllWatchNext = async (req, res) => {
   }
 };
 
+const searchInWatchNext = async (req, res) => {
+  try {
+    const userId = req.user.user_account_id;
+
+    const mediaTitle = req.query.title;
+
+    const page = +req.query.page;
+
+    const { status, message } = await getPaginatedSearchItems(
+      mediaTitle,
+      page,
+      userId,
+      "user_watch_next"
+    );
+
+    res.status(status).send(message);
+  } catch (e) {
+    res.status(400).send();
+  }
+};
+
 module.exports = {
   addToWatchNext,
   deleteFromWatchNext,
   getAllWatchNext,
   checkMediaInWatchNext,
+  searchInWatchNext,
 };

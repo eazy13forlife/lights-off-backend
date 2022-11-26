@@ -7,6 +7,7 @@ const {
   deleteFromWatchNext,
   getAllWatchNext,
   checkMediaInWatchNext,
+  searchInWatchNext,
 } = require("../controllers/watchNextController");
 
 router.head(
@@ -17,6 +18,8 @@ router.head(
 
 //get all watch next media
 router.get("/watch-next", authenticateMiddleware, getAllWatchNext);
+
+router.get("/watch-next/search", authenticateMiddleware, searchInWatchNext);
 
 //delete a specific media from watch next
 router.delete(

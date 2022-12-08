@@ -112,7 +112,7 @@ const getPaginatedItems = async (page, userId, table) => {
     INNER JOIN media
     ON ${table}.media_id=media.media_id
     WHERE ${table}.user_account_id=${userId}
-    ORDER BY media.media_id
+    ORDER BY media.title ASC
     LIMIT ${resultsPerPage} OFFSET ${offsetAmount}`
   );
 
@@ -161,7 +161,7 @@ const getPaginatedSearchItems = async (mediaTitle, page, userId, table) => {
     INNER JOIN media
     ON ${table}.media_id=media.media_id
     WHERE ${table}.user_account_id=${userId} AND media.title ILIKE '%${mediaTitle}%'
-    ORDER BY media.media_id
+    ORDER BY media.title ASC
     LIMIT ${resultsPerPage} OFFSET ${offsetAmount}`
   );
 

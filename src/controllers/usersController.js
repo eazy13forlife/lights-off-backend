@@ -42,7 +42,6 @@ const createAccount = async (req, res) => {
     //respond with the added user and their authToken
     res.status(201).send({ user, authToken });
   } catch (e) {
-    console.log(e);
     const { status, message } = usersErrors(e);
 
     res.status(status).send(message);

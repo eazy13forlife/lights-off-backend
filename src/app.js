@@ -15,7 +15,7 @@ const app = express();
 app.use(
   cors({
     allowedHeaders: ["Content-Type", "authorization", "Accept"],
-    origin: "http://localhost:3001",
+    origin: "https://lights-off-frontend.vercel.app",
     preflightContinue: true,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   })

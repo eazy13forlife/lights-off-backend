@@ -1,6 +1,9 @@
 # Lights Off
 Lights Off is a fully responsive, full stack movie/tv show application with a bunch of fun features.
 
+## Live Site
+https://lights-off-frontend.vercel.app/login
+
 ## Images
 ### Desktop
 ![LightsOff-min](https://user-images.githubusercontent.com/72288176/207581379-819a0b3d-3a80-42e2-b6db-f0321e3b2e16.png)

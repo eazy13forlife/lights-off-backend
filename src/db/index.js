@@ -1,4 +1,4 @@
-const { Pool} = require("pg");
+const { Pool } = require("pg");
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -6,7 +6,7 @@ const pool = new Pool({
   connectionString,
 });
 
-/* for loca connection to postgresql database
+/* for local connection to postgresql database
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,

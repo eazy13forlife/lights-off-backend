@@ -8,7 +8,7 @@ https://lights-off-frontend.vercel.app/login
 ### Desktop
 ![LightsOff-min](https://user-images.githubusercontent.com/72288176/207581379-819a0b3d-3a80-42e2-b6db-f0321e3b2e16.png)
 ### Mobile
-<img width="417" alt="Screen Shot 2022-12-14 at 3 17 53 AM" src="https://user-images.githubusercontent.com/72288176/207582012-ad4579bc-69b5-4d30-86e4-584cb1c91460.png">
+ ![Screen Shot 2023-01-21 at 11 38 11 AM](https://user-images.githubusercontent.com/72288176/213884248-2a67ff16-da38-4527-a4db-85648b1f8a26.png)
 
 ## Technologies
 * PostgreSQL

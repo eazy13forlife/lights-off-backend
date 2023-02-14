@@ -1,5 +1,5 @@
 # Lights Off
-Lights Off is a fully responsive, full stack movie/tv show application with a bunch of fun features.
+Lights Off is a fully responsive, full stack movie/tv show application with a bunch of fun features. This is the backend code of the application.
 
 ## Live Site
 https://lights-off-frontend.vercel.app/login

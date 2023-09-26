@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 
-//i put has property with payload to ensure a new token each time for a specific user
+//i put hash property with payload to ensure a new token each time for a specific user
 const generateAuthToken = (userId) => {
   return jwt.sign(
     {
